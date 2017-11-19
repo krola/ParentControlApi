@@ -11,16 +11,14 @@ namespace ParentControlApi.Controllers
     [Route("api/[controller]")]
     public class DeviceController : Controller
     {
-        private UserRepository _userRepository;
+        private IRepository<Device> _deviceRepository;
 
-        public DeviceController(){
-            _userRepository = new UserRepository();
-        }
+        public DeviceController(IDeviceRepository deviceRepository) => _deviceRepository = deviceRepository as IRepository<Device>;
         // GET api/values
         [HttpGet]
-        public IEnumerable<User> Get()
+        public IEnumerable<Device> Get()
         {
-            return _userRepository.GetAll();
+            return _deviceRepository.GetAll();
         }
 
         // GET api/values/5

@@ -11,16 +11,15 @@ namespace ParentControlApi.Controllers
     [Route("api/[controller]")]
     public class TimesheetController : Controller
     {
-        private UserRepository _userRepository;
+        private IRepository<Timesheet> _timesheetRepository;
 
-        public TimesheetController(){
-            _userRepository = new UserRepository();
-        }
+        public TimesheetController(ITimesheetRepository timesheetRepository) => _timesheetRepository = timesheetRepository as IRepository<Timesheet>;
+      
         // GET api/values
         [HttpGet]
-        public IEnumerable<User> Get()
+        public IEnumerable<Timesheet> Get()
         {
-            return _userRepository.GetAll();
+            return _timesheetRepository.GetAll();
         }
 
         // GET api/values/5

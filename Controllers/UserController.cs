@@ -11,11 +11,10 @@ namespace ParentControlApi.Controllers
     [Route("api/[controller]")]
     public class UserController : Controller
     {
-        private UserRepository _userRepository;
+        private IRepository<User> _userRepository;
 
-        public UserController(){
-            _userRepository = new UserRepository();
-        }
+        public UserController(IUserRepository userRepository) => _userRepository = userRepository as IRepository<User>;
+      
         // GET api/values
         [HttpGet]
         public IEnumerable<User> Get()

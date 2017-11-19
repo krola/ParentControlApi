@@ -11,16 +11,15 @@ namespace ParentControlApi.Controllers
     [Route("api/[controller]")]
     public class SessionController : Controller
     {
-        private UserRepository _userRepository;
+         private IRepository<Session> _sessionRepository;
 
-        public SessionController(){
-            _userRepository = new UserRepository();
-        }
+        public SessionController(ISessionRepository sessionRepository) => _sessionRepository = sessionRepository as IRepository<Session>;
+       
         // GET api/values
         [HttpGet]
-        public IEnumerable<User> Get()
+        public IEnumerable<Session> Get()
         {
-            return _userRepository.GetAll();
+            return _sessionRepository.GetAll();
         }
 
         // GET api/values/5

@@ -11,16 +11,15 @@ namespace ParentControlApi.Controllers
     [Route("api/[controller]")]
     public class ScheduleController : Controller
     {
-        private UserRepository _userRepository;
+        private IRepository<Schedule> _scheduleRepository;
 
-        public ScheduleController(){
-            _userRepository = new UserRepository();
-        }
+        public ScheduleController(IScheduleRepository scheduleRepository) => _scheduleRepository = scheduleRepository as IRepository<Schedule>;
+       
         // GET api/values
         [HttpGet]
-        public IEnumerable<User> Get()
+        public IEnumerable<Schedule> Get()
         {
-            return _userRepository.GetAll();
+            return _scheduleRepository.GetAll();
         }
 
         // GET api/values/5
