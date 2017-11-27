@@ -61,6 +61,7 @@ namespace ParentControlApi
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "ParentControl API", Version = "v1"});
+                c.AddSecurityDefinition("Bearer", new ApiKeyScheme() { In = "header", Description = "Please insert token with Bearer into field", Name = "Authorization", Type = "apiKey" });
             });
 
             services.Configure<TokenAuthentication>(Configuration.GetSection("TokenAuthentication"));
@@ -69,6 +70,7 @@ namespace ParentControlApi
             services.AddScoped<IScheduleRepository, ScheduleRepository>();
             services.AddScoped<ISessionRepository, SessionRepository>();
             services.AddScoped<ITimesheetRepository, TimesheetRepository>();
+            services.AddScoped<IDeviceService, DeviceService>();
             services.AddMvc();
         }
 
@@ -84,7 +86,7 @@ namespace ParentControlApi
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Parent Control API V1");
             });
         }
     }
