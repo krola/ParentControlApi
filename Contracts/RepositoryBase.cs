@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 
 public abstract class GenericRepository<C, T> : 
@@ -15,6 +16,11 @@ public abstract class GenericRepository<C, T> :
     public virtual IQueryable<T> GetAll() {
 
         IQueryable<T> query = _entities.Set<T>();
+        return query;
+    }
+
+    public virtual T Get(int id) {
+        T query = _entities.Set<T>().Find(id);
         return query;
     }
 
@@ -34,9 +40,5 @@ public abstract class GenericRepository<C, T> :
 
     public virtual void Edit(T entity) {
         //_entities.Entry(entity).State = System.Data.;
-    }
-
-    public virtual void Save() {
-        _entities.SaveChanges();
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ParentControlApi.DTO;
 
 namespace ParentControlApi.Controllers
 {
@@ -11,21 +12,25 @@ namespace ParentControlApi.Controllers
     [Route("api/[controller]")]
     public class DeviceController : Controller
     {
-        private IRepository<Device> _deviceRepository;
+        private IDeviceService _deviceService;
 
-        public DeviceController(IDeviceRepository deviceRepository) => _deviceRepository = deviceRepository as IRepository<Device>;
+        public DeviceController(IDeviceService deviceService) => _deviceService = deviceService;
         // GET api/values
         [HttpGet]
-        public IEnumerable<Device> Get()
+        public IEnumerable<DeviceDTO> Get()
         {
-            return _deviceRepository.GetAll();
+            var devices = _deviceService.GetUserDevices();
+            return devices.Select(d => new DeviceDTO(){
+                DeviceId = d.DeviceId,
+                Name = d.Name
+            }).ToArray();
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
         public string Get(int id)
         {
-            return "value";
+            return "test";
         }
 
         // POST api/values
