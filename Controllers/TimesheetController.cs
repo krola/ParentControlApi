@@ -13,7 +13,7 @@ namespace ParentControlApi.Controllers
     {
         private IRepository<Timesheet> _timesheetRepository;
 
-        public TimesheetController(ITimesheetRepository timesheetRepository) => _timesheetRepository = timesheetRepository as IRepository<Timesheet>;
+        public TimesheetController(IRepository<Timesheet> timesheetRepository) => _timesheetRepository = timesheetRepository;
       
         // GET api/values
         [HttpGet]

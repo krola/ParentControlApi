@@ -13,7 +13,7 @@ namespace ParentControlApi.Controllers
     {
         private IRepository<User> _userRepository;
 
-        public UserController(IUserRepository userRepository) => _userRepository = userRepository as IRepository<User>;
+        public UserController(IRepository<User> userRepository) => _userRepository = userRepository;
       
         // GET api/values
         [HttpGet]

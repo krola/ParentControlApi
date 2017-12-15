@@ -13,7 +13,7 @@ namespace ParentControlApi.Controllers
     {
          private IRepository<Session> _sessionRepository;
 
-        public SessionController(ISessionRepository sessionRepository) => _sessionRepository = sessionRepository as IRepository<Session>;
+        public SessionController(IRepository<Session> sessionRepository) => _sessionRepository = sessionRepository;
        
         // GET api/values
         [HttpGet]

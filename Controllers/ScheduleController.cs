@@ -13,7 +13,7 @@ namespace ParentControlApi.Controllers
     {
         private IRepository<Schedule> _scheduleRepository;
 
-        public ScheduleController(IScheduleRepository scheduleRepository) => _scheduleRepository = scheduleRepository as IRepository<Schedule>;
+        public ScheduleController(IRepository<Schedule> scheduleRepository) => _scheduleRepository = scheduleRepository;
        
         // GET api/values
         [HttpGet]

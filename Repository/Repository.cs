@@ -3,11 +3,11 @@ using System.Linq;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 
-public abstract class GenericRepository<C, T> : 
-    IRepository<T> where T : class where C : DbContext, new() {
+public class Repository<T> : 
+    IRepository<T> where T : class {
 
-    private C _entities = new C();
-    public C Context {
+    private DbContext _entities = new ParentControlContext();
+    public DbContext Context {
 
         get { return _entities; }
         set { _entities = value; }
