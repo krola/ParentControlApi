@@ -1,2 +1,2 @@
 cd ParentControlApi/
-dotnet ParentControlApi.dll &
+nohup dotnet ParentControlApi.dll
