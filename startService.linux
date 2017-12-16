@@ -1,0 +1,2 @@
+cd ParentControlApi/
+dotnet ParentControlApi.dll &
