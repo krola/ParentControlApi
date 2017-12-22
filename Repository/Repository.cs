@@ -30,15 +30,18 @@ public class Repository<T> :
         return query;
     }
 
-    public virtual void Add(T entity) {
+    public void Add(T entity) {
         _entities.Set<T>().Add(entity);
+        _entities.SaveChanges();
     }
 
-    public virtual void Delete(T entity) {
+    public void Delete(T entity) {
         _entities.Set<T>().Remove(entity);
+        _entities.SaveChanges();
     }
 
-    public virtual void Edit(T entity) {
-        //_entities.Entry(entity).State = System.Data.;
+    public void Edit(T entity) {
+        _entities.Entry(entity).State = EntityState.Modified;
+        _entities.SaveChanges();
     }
 }

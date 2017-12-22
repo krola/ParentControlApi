@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -66,6 +67,7 @@ namespace ParentControlApi
 
             services.Configure<TokenAuthentication>(Configuration.GetSection("TokenAuthentication"));
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddAutoMapper();
             services.AddMvc();
         }
 

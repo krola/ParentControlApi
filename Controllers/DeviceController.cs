@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ParentControlApi.DTO;
@@ -13,42 +14,50 @@ namespace ParentControlApi.Controllers
     public class DeviceController : Controller
     {
         private IRepository<Device> _deviceRepository;
+        private readonly IMapper _mapper;
 
-        public DeviceController(IRepository<Device> deviceRepository) => _deviceRepository = deviceRepository;
-        // GET api/values
+        public DeviceController(IRepository<Device> deviceRepository, IMapper mapper){
+            _deviceRepository = deviceRepository;
+            _mapper = mapper;
+        }  
+        // GET api/device
         [HttpGet]
         public IEnumerable<DeviceDTO> Get()
         {
             var devices = _deviceRepository.GetAll();
-            return devices.Select(d => new DeviceDTO(){
-                DeviceId = d.DeviceId,
-                Name = d.Name
-            }).ToArray();
+            return devices.Select(d => _mapper.Map<DeviceDTO>(d)).ToArray();
         }
 
-        // GET api/values/5
+        // GET api/device/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public DeviceDTO Get(int id)
         {
-            return "test";
+            var device = _deviceRepository.Get(id);
+            return _mapper.Map<DeviceDTO>(device);
         }
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody]string value)
+        public void Post([FromBody]DeviceDTO device)
         {
+            _deviceRepository.Add(_mapper.Map<Device>(device));
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public void Put(int id, [FromBody]DeviceDTO device)
         {
+            var existingDevice = _deviceRepository.Get(id);
+            Mapper.Map<DeviceDTO, Device>(device, existingDevice);
+            _deviceRepository.Edit(existingDevice);
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            var device = _deviceRepository.Get(id);
+            _deviceRepository.Delete(device);
         }
     }
 }
