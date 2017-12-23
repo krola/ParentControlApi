@@ -1,5 +1,6 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Security.Principal;
@@ -12,18 +13,22 @@ using Microsoft.IdentityModel.Tokens;
     public class AuthorizationController : Controller
     {
     private readonly IOptions<TokenAuthentication> _tokenConfig;
+    private readonly IRepository<User> userRepository;
 
-    public AuthorizationController(IOptions<TokenAuthentication> tokenConfig) {
+    public AuthorizationController(IOptions<TokenAuthentication> tokenConfig, IRepository<User> userRepository) {
         this._tokenConfig = tokenConfig;
+        this.userRepository = userRepository;
     }
 
         [HttpPost]
         public IActionResult GetToken([FromBody]LogInDTO authorizationData)
         {
-            if (authorizationData.UserName != "test")
+            var user = userRepository.FindBy(u => u.Name == authorizationData.UserName && 
+            u.Password == authorizationData.Password).SingleOrDefault();
+            if (user == null)
                 return Unauthorized();
 
-            var token = GenerateToken(new User() { Id = 1, Name = "test" }, DateTime.Now.AddHours(1));
+            var token = GenerateToken(user, DateTime.Now.AddHours(1));
 
             return Ok(token);
         }

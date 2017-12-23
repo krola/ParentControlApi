@@ -14,17 +14,19 @@ namespace ParentControlApi.Controllers
     public class DeviceController : Controller
     {
         private IRepository<Device> _deviceRepository;
+        private readonly IDeviceService _deviceService;
         private readonly IMapper _mapper;
 
-        public DeviceController(IRepository<Device> deviceRepository, IMapper mapper){
+        public DeviceController(IRepository<Device> deviceRepository, IDeviceService deviceService, IMapper mapper){
             _deviceRepository = deviceRepository;
+            _deviceService = deviceService;
             _mapper = mapper;
         }  
         // GET api/device
         [HttpGet]
         public IEnumerable<DeviceDTO> Get()
         {
-            var devices = _deviceRepository.GetAll();
+            var devices = _deviceService.GetAll();
             return devices.Select(d => _mapper.Map<DeviceDTO>(d)).ToArray();
         }
 
