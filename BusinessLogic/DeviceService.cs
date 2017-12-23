@@ -1,31 +1,31 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using ParentControlApi.DTO;
 
-public interface IDeviceService {
-    IEnumerable<Device> GetAll();
-    Device GetById(string Id);
-}
-
-public class DeviceService : IDeviceService
-{
-    private readonly IRepository<Device> deviceRepository;
-    private readonly IHttpContextAccessor httpContextAccessor;
-
-    public DeviceService(IRepository<Device> deviceRepository, IHttpContextAccessor httpContextAccessor){
-        this.deviceRepository = deviceRepository;
-        this.httpContextAccessor = httpContextAccessor;
+public class DeviceService : BaseService<Device, DeviceDTO>
+{    public DeviceService(IRepository<Device> deviceRepositor,IUserProvider userProvider) : base(userProvider, deviceRepositor) {
     }
 
-    public IEnumerable<Device> GetAll()
+    public override IEnumerable<Device> GetAll()
     {
-        var test = httpContextAccessor.HttpContext.User;
-        throw new System.NotImplementedException();
+        var user = userProvider.GetAuthorizedUser();
+        return entityRepository.FindBy(d => d.User == user).AsEnumerable();
     }
 
-    public Device GetById(string Id)
+    public override Device Get(string Id)
     {
-        var test = httpContextAccessor.HttpContext.User;
-        throw new System.NotImplementedException();
+        var user = userProvider.GetAuthorizedUser();
+        return entityRepository.FindBy(d => d.User == user && d.DeviceId == Id).SingleOrDefault();
+    }
+
+    public override void Create(Device device)
+    {
+        var user = userProvider.GetAuthorizedUser();
+        device.UserId = user.Id;
+        entityRepository.Add(device);
     }
 }

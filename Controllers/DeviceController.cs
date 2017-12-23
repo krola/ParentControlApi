@@ -13,12 +13,10 @@ namespace ParentControlApi.Controllers
     [Route("api/[controller]")]
     public class DeviceController : Controller
     {
-        private IRepository<Device> _deviceRepository;
-        private readonly IDeviceService _deviceService;
+        private readonly BaseService<Device, DeviceDTO> _deviceService;
         private readonly IMapper _mapper;
 
-        public DeviceController(IRepository<Device> deviceRepository, IDeviceService deviceService, IMapper mapper){
-            _deviceRepository = deviceRepository;
+        public DeviceController(BaseService<Device, DeviceDTO> deviceService, IMapper mapper){
             _deviceService = deviceService;
             _mapper = mapper;
         }  
@@ -32,9 +30,9 @@ namespace ParentControlApi.Controllers
 
         // GET api/device/5
         [HttpGet("{id}")]
-        public DeviceDTO Get(int id)
+        public DeviceDTO Get(string id)
         {
-            var device = _deviceRepository.Get(id);
+            var device = _deviceService.Get(id);
             return _mapper.Map<DeviceDTO>(device);
         }
 
@@ -42,24 +40,21 @@ namespace ParentControlApi.Controllers
         [HttpPost]
         public void Post([FromBody]DeviceDTO device)
         {
-            _deviceRepository.Add(_mapper.Map<Device>(device));
+            _deviceService.Create(_mapper.Map<Device>(device));
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]DeviceDTO device)
+        public void Put(string id, [FromBody]DeviceDTO device)
         {
-            var existingDevice = _deviceRepository.Get(id);
-            Mapper.Map<DeviceDTO, Device>(device, existingDevice);
-            _deviceRepository.Edit(existingDevice);
+            _deviceService.Update(id, device);
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void Delete(string id)
         {
-            var device = _deviceRepository.Get(id);
-            _deviceRepository.Delete(device);
+            _deviceService.Remove(id);
         }
     }
 }

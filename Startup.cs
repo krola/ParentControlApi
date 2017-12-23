@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using ParentControlApi.DTO;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace ParentControlApi
@@ -68,7 +69,8 @@ namespace ParentControlApi
 
             services.Configure<TokenAuthentication>(Configuration.GetSection("TokenAuthentication"));
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            services.AddTransient<IDeviceService, DeviceService>();
+            services.AddScoped(typeof(BaseService<Device, DeviceDTO>), typeof(DeviceService));
+            services.AddTransient<IUserProvider, UserProvider>();
             services.AddAutoMapper();
             services.AddMvc();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
