@@ -8,11 +8,11 @@ using ParentControlApi.DTO;
 
 public interface IDeviceService
 {
-    DeviceDTO Get(string deviceId);
+    DeviceDTO Get(string deviceName);
     IEnumerable<DeviceDTO> GetAll();
     void Create(DeviceDTO device);
-    void Update(string oldDeviceId, DeviceDTO newDevice);
-    void Remove(string deviceId);
+    void Update(string oldDeviceName, DeviceDTO newDevice);
+    void Remove(string deviceName);
 
 }
 public class DeviceService : IDeviceService
@@ -32,13 +32,16 @@ public class DeviceService : IDeviceService
         return GetAllDevices().Select(d => mapper.Map<DeviceDTO>(d));
     }
 
-    public DeviceDTO Get(string Id)
+    public DeviceDTO Get(string deviceName)
     {
-        return mapper.Map<DeviceDTO>(GetEntity(Id));
+        return mapper.Map<DeviceDTO>(GetEntity(deviceName));
     }
 
     public void Create(DeviceDTO device)
     {
+        if(GetAllDevices().Any(d => d.Name == device.Name))
+            throw new DeviceAlreadyExistsException();
+            
         var user = userProvider.GetAuthorizedUser();
         var newDevice = mapper.Map<Device>(device);
         newDevice.UserId = user.Id;
@@ -51,22 +54,26 @@ public class DeviceService : IDeviceService
         return deviceRepositor.FindBy(d => d.User == user).AsEnumerable();
     }
 
-    private Device GetEntity(string Id)
+    private Device GetEntity(string deviceName)
     {
         var user = userProvider.GetAuthorizedUser();
-        return deviceRepositor.FindBy(d => d.User == user && d.DeviceId == Id).SingleOrDefault();
+        return deviceRepositor.FindBy(d => d.User == user && d.Name == deviceName).SingleOrDefault();
     }
 
-    public void Update(string oldDeviceId, DeviceDTO newDevice)
+    public void Update(string oldDeviceName, DeviceDTO newDevice)
     {
-        var oldDevice = GetEntity(oldDeviceId);
+        var oldDevice = GetEntity(oldDeviceName);
+
+        if(GetAllDevices().Any(d => d.Name == newDevice.Name))
+            throw new DeviceAlreadyExistsException();
+
         var updatedDevice = Mapper.Map<DeviceDTO, Device>(newDevice, oldDevice);
         deviceRepositor.Edit(updatedDevice);
     }
 
-    public void Remove(string id)
+    public void Remove(string deviceName)
     {
-        var entity = GetEntity(id);
+        var entity = GetEntity(deviceName);
         deviceRepositor.Delete(entity);
     }
 }

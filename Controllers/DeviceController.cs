@@ -13,10 +13,10 @@ namespace ParentControlApi.Controllers
     [Route("api/[controller]")]
     public class DeviceController : Controller
     {
-        private readonly BaseService<Device, DeviceDTO> _deviceService;
+        private readonly IDeviceService _deviceService;
         private readonly IMapper _mapper;
 
-        public DeviceController(BaseService<Device, DeviceDTO> deviceService, IMapper mapper){
+        public DeviceController(IDeviceService deviceService, IMapper mapper){
             _deviceService = deviceService;
             _mapper = mapper;
         }  

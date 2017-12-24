@@ -69,8 +69,9 @@ namespace ParentControlApi
 
             services.Configure<TokenAuthentication>(Configuration.GetSection("TokenAuthentication"));
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            services.AddScoped(typeof(BaseService<Device, DeviceDTO>), typeof(DeviceService));
             services.AddTransient<IUserProvider, UserProvider>();
+            services.AddTransient<IDeviceService, DeviceService>();
+            services.AddTransient<IScheduleService, ScheduleService>();
             services.AddAutoMapper();
             services.AddMvc();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
