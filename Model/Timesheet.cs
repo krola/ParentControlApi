@@ -10,5 +10,6 @@ public class Timesheet
 
         public DateTime CreateTime { get; set; }
 
+        public int ScheduleId { get; set; }
         public virtual Schedule Schedule { get; set; }
     }

@@ -304,3 +304,9 @@ __pycache__/
 # OpenCover UI analysis results
 OpenCover/
 obj/Debug/netcoreapp2.0/ParentControlApi.csproj.CoreCompileInputs.cache
+bin/Debug/netcoreapp2.0/ParentControlApi.dll
+bin/Debug/netcoreapp2.0/ParentControlApi.pdb
+bin/Debug/netcoreapp2.0/ParentControlApi.runtimeconfig.dev.json
+obj/Debug/netcoreapp2.0/ParentControlApi.dll
+obj/Debug/netcoreapp2.0/ParentControlApi.pdb
+obj/Debug/netcoreapp2.0/ParentControlApi.csproj.CoreCompileInputs.cache
