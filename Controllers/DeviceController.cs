@@ -24,23 +24,21 @@ namespace ParentControlApi.Controllers
         [HttpGet]
         public IEnumerable<DeviceDTO> Get()
         {
-            var devices = _deviceService.GetAll();
-            return devices.Select(d => _mapper.Map<DeviceDTO>(d)).ToArray();
+            return _deviceService.GetAll();
         }
 
         // GET api/device/5
         [HttpGet("{id}")]
         public DeviceDTO Get(string id)
         {
-            var device = _deviceService.Get(id);
-            return _mapper.Map<DeviceDTO>(device);
+            return _deviceService.Get(id);
         }
 
         // POST api/values
         [HttpPost]
         public void Post([FromBody]DeviceDTO device)
         {
-            _deviceService.Create(_mapper.Map<Device>(device));
+            _deviceService.Create(device);
         }
 
         // PUT api/values/5
