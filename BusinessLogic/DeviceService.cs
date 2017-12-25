@@ -8,44 +8,41 @@ using ParentControlApi.DTO;
 
 public interface IDeviceService
 {
-    DeviceDTO Get(string deviceName);
-    IEnumerable<DeviceDTO> GetAll();
-    void Create(DeviceDTO device);
-    void Update(string oldDeviceName, DeviceDTO newDevice);
-    void Remove(string deviceName);
+    Device Get(int Id);
+    IEnumerable<Device> GetAll();
+    void Create(Device device);
+    void Update(Device newDevice);
+    void Remove(int Id);
 
 }
 public class DeviceService : IDeviceService
 {
     private readonly IRepository<Device> deviceRepositor;
     private readonly IUserProvider userProvider;
-    private readonly IMapper mapper;
 
-    public DeviceService(IRepository<Device> deviceRepositor,IUserProvider userProvider, IMapper mapper) {
+    public DeviceService(IRepository<Device> deviceRepositor,IUserProvider userProvider) {
         this.deviceRepositor = deviceRepositor;
         this.userProvider = userProvider;
-        this.mapper = mapper;
     }
 
-    public IEnumerable<DeviceDTO> GetAll()
+    public IEnumerable<Device> GetAll()
     {
-        return GetAllDevices().Select(d => mapper.Map<DeviceDTO>(d));
+        return GetAllDevices();
     }
 
-    public DeviceDTO Get(string deviceName)
+    public Device Get(int Id)
     {
-        return mapper.Map<DeviceDTO>(GetEntity(deviceName));
+        return deviceRepositor.Get(Id);
     }
 
-    public void Create(DeviceDTO device)
+    public void Create(Device device)
     {
         if(GetAllDevices().Any(d => d.Name == device.Name))
             throw new DeviceAlreadyExistsException();
             
         var user = userProvider.GetAuthorizedUser();
-        var newDevice = mapper.Map<Device>(device);
-        newDevice.UserId = user.Id;
-        deviceRepositor.Add(newDevice);
+        device.UserId = user.Id;
+        deviceRepositor.Add(device);
     }
 
     private IEnumerable<Device> GetAllDevices()
@@ -54,26 +51,26 @@ public class DeviceService : IDeviceService
         return deviceRepositor.FindBy(d => d.User == user).AsEnumerable();
     }
 
-    private Device GetEntity(string deviceName)
+    private Device GetEntity(int Id)
     {
         var user = userProvider.GetAuthorizedUser();
-        return deviceRepositor.FindBy(d => d.User == user && d.Name == deviceName).SingleOrDefault();
+        return deviceRepositor.FindBy(d => d.User == user && d.Id == Id).SingleOrDefault();
     }
 
-    public void Update(string oldDeviceName, DeviceDTO newDevice)
+    public void Update(Device newDevice)
     {
-        var oldDevice = GetEntity(oldDeviceName);
+        var oldDevice = GetEntity(newDevice.Id);
 
         if(GetAllDevices().Any(d => d.Name == newDevice.Name))
             throw new DeviceAlreadyExistsException();
 
-        var updatedDevice = Mapper.Map<DeviceDTO, Device>(newDevice, oldDevice);
+        var updatedDevice = Mapper.Map<Device, Device>(newDevice, oldDevice);
         deviceRepositor.Edit(updatedDevice);
     }
 
-    public void Remove(string deviceName)
+    public void Remove(int Id)
     {
-        var entity = GetEntity(deviceName);
+        var entity = GetEntity(Id);
         deviceRepositor.Delete(entity);
     }
 }

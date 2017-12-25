@@ -5,81 +5,69 @@ using ParentControlApi.DTO;
 
 public interface IScheduleService
 {
-    ScheduleDTO Get(string deviceName, string scheduleName);
-    IEnumerable<ScheduleDTO> GetAll(string deviceName);
-    void Create(ScheduleDTO schedule);
-    void Update(string deviceName, string oldScheduleName, ScheduleDTO newSchedule);
-    void Remove(string deviceName, string scheduleName);
+    Schedule Get(int Id);
+    IEnumerable<Schedule> GetAll(int deviceId);
+    void Create(Schedule schedule, int deviceId);
+    void Update(Schedule newSchedule);
+    void Remove(int Id);
 }
 
 public class ScheduleService : IScheduleService
 {
     private readonly IRepository<Schedule> scheduleRepositor;
-    private readonly IRepository<Device> deviceRepositor;
     private readonly IDeviceService deviceService;
-    private readonly IMapper mapper;
 
-    public ScheduleService(IRepository<Schedule> scheduleRepositor,IRepository<Device> deviceRepositor, IDeviceService deviceService, IMapper mapper){
+    public ScheduleService(IRepository<Schedule> scheduleRepositor,IDeviceService deviceService){
         this.scheduleRepositor = scheduleRepositor;
-        this.deviceRepositor = deviceRepositor;
         this.deviceService = deviceService;
-        this.mapper = mapper;
     }
 
-    public void Create(ScheduleDTO schedule)
+    public void Create(Schedule schedule, int deviceId)
     {
-        var device = GetDevice(schedule.DeviceName);
-        if(GetAll(schedule.DeviceName).Any(s => s.Name == schedule.Name))
+        var device = deviceService.Get(deviceId);
+        if(GetAll(deviceId).Any(s => s.Name == schedule.Name))
             throw new ScheduleAlreadyExistsException();
 
-        var newSchedule = mapper.Map<Schedule>(schedule);
-        newSchedule.DeviceId = device.Id;
-        scheduleRepositor.Add(newSchedule);
+        schedule.DeviceId = device.Id;
+        scheduleRepositor.Add(schedule);
     }
 
-    public ScheduleDTO Get(string deviceName, string scheduleName)
+    public Schedule Get(int Id)
     {
-        var schedule = GetSchedule(deviceName, scheduleName);
-        if(schedule != null){
-            return mapper.Map<ScheduleDTO>(schedule);
-        }
-        return null;
- }
+        return GetSchedule(Id);
+    }
 
-    public IEnumerable<ScheduleDTO> GetAll(string deviceName)
+    public IEnumerable<Schedule> GetAll(int deviceId)
     {
-        var device = GetDevice(deviceName);
+        var device = deviceService.Get(deviceId);
         return scheduleRepositor.FindBy(s => s.Device == device)
-        .Select(s => mapper.Map<ScheduleDTO>(s))
         .AsEnumerable();
     }
 
-    public void Remove(string deviceName, string scheduleName)
+    public void Remove(int Id)
     {
-        var schedule = GetSchedule(deviceName, scheduleName);
+        var schedule = GetSchedule(Id);
         scheduleRepositor.Delete(schedule);
     }
 
-    public void Update(string deviceName, string oldScheduleName, ScheduleDTO newSchedule)
+    public void Update(Schedule newSchedule)
     {
-        var oldSchedule = GetSchedule(deviceName, oldScheduleName);
-        var exisitngSchedule = GetSchedule(deviceName, newSchedule.Name);
+        var oldSchedule = GetSchedule(newSchedule.Id);
+        var exisitngSchedule = scheduleRepositor.FindBy(s => s.DeviceId == newSchedule.DeviceId &&
+            s.Name == newSchedule.Name).SingleOrDefault();
         if(exisitngSchedule != null)
             throw new ScheduleAlreadyExistsException();
         
-        var updatedSchedule = Mapper.Map<ScheduleDTO, Schedule>(newSchedule, oldSchedule);
+        var updatedSchedule = Mapper.Map<Schedule, Schedule>(newSchedule, oldSchedule);
         scheduleRepositor.Edit(updatedSchedule);
     }
 
-    private Device GetDevice(string deviceName){
-        var device =  deviceRepositor.FindBy(d => d.Name == deviceName).SingleOrDefault();  
-        if(device == null)
-           throw new DeviceNotExistException();
-        return device;
-    }
-
-    private Schedule GetSchedule(string deviceName, string scheduleName){
-        var device = GetDevice(deviceName);
-        return scheduleRepositor.FindBy(s => s.Device == device && s.Name == scheduleName).SingleOrDefault();
+    private Schedule GetSchedule(int Id){
+         var devices = deviceService.GetAll();
+        var schedule = scheduleRepositor.Get(Id);
+        if(devices.Any(d => d == schedule.Device)){
+            return schedule;
+        }
+        return null;
     }
 }
