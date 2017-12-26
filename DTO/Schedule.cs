@@ -8,6 +8,6 @@ namespace ParentControlApi.DTO
         public bool AllowWitoutTimesheet { get; set; }
 
         public string Name { get; set; }
-        public string DeviceName { get; set; }
+        public DeviceDTO Device { get; set; }
     }
 }

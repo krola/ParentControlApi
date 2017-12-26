@@ -69,7 +69,7 @@ namespace ParentControlApi.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    DeviceId = table.Column<int>(nullable: true),
+                    DeviceId = table.Column<int>(nullable: false),
                     EndTime = table.Column<DateTime>(nullable: true),
                     SessionId = table.Column<Guid>(nullable: false),
                     StarTime = table.Column<DateTime>(nullable: false)
@@ -82,7 +82,7 @@ namespace ParentControlApi.Migrations
                         column: x => x.DeviceId,
                         principalTable: "Devices",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -94,7 +94,7 @@ namespace ParentControlApi.Migrations
                     CreateTime = table.Column<DateTime>(nullable: false),
                     DateFrom = table.Column<DateTime>(nullable: false),
                     DateTo = table.Column<DateTime>(nullable: true),
-                    ScheduleId = table.Column<int>(nullable: true),
+                    ScheduleId = table.Column<int>(nullable: false),
                     Time = table.Column<TimeSpan>(nullable: false)
                 },
                 constraints: table =>
@@ -105,7 +105,7 @@ namespace ParentControlApi.Migrations
                         column: x => x.ScheduleId,
                         principalTable: "Schedules",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

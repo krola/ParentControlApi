@@ -9,5 +9,6 @@ public class Session
 
         public DateTime? EndTime { get; set; }
 
+        public int DeviceId { get; set; }
         public virtual Device Device { get; set; }
     }

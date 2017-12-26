@@ -7,7 +7,7 @@ public interface IScheduleService
 {
     Schedule Get(int Id);
     IEnumerable<Schedule> GetAll(int deviceId);
-    void Create(Schedule schedule, int deviceId);
+    void Create(Schedule schedule);
     void Update(Schedule newSchedule);
     void Remove(int Id);
 }
@@ -22,10 +22,10 @@ public class ScheduleService : IScheduleService
         this.deviceService = deviceService;
     }
 
-    public void Create(Schedule schedule, int deviceId)
+    public void Create(Schedule schedule)
     {
-        var device = deviceService.Get(deviceId);
-        if(GetAll(deviceId).Any(s => s.Name == schedule.Name))
+        var device = deviceService.Get(schedule.DeviceId);
+        if(GetAll(schedule.DeviceId).Any(s => s.Name == schedule.Name))
             throw new ScheduleAlreadyExistsException();
 
         schedule.DeviceId = device.Id;

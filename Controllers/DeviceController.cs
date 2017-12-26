@@ -24,33 +24,35 @@ namespace ParentControlApi.Controllers
         [HttpGet]
         public IEnumerable<DeviceDTO> Get()
         {
-            return _deviceService.GetAll();
+            return _deviceService.GetAll().Select(d => _mapper.Map<DeviceDTO>(d));
         }
 
         // GET api/device/5
         [HttpGet("{id}")]
-        public DeviceDTO Get(string id)
+        public DeviceDTO Get(int id)
         {
-            return _deviceService.Get(id);
+            return _mapper.Map<DeviceDTO>(_deviceService.Get(id));
         }
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody]DeviceDTO device)
+        public void Post([FromBody]CreateDeviceParams device)
         {
-            _deviceService.Create(device);
+            _deviceService.Create(_mapper.Map<Device>(device));
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(string id, [FromBody]DeviceDTO device)
+        public void Put(int id, [FromBody]CreateDeviceParams device)
         {
-            _deviceService.Update(id, device);
+            var domainDevice = _mapper.Map<Device>(device);
+            domainDevice.Id = id;
+            _deviceService.Update(domainDevice);
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(string id)
+        public void Delete(int id)
         {
             _deviceService.Remove(id);
         }

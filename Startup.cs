@@ -72,6 +72,8 @@ namespace ParentControlApi
             services.AddTransient<IUserProvider, UserProvider>();
             services.AddTransient<IDeviceService, DeviceService>();
             services.AddTransient<IScheduleService, ScheduleService>();
+            services.AddTransient<ITimesheerService, TimesheerService>();
+            services.AddTransient<ISessionService, SessionService>();
             services.AddAutoMapper();
             services.AddMvc();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ParentControlApi.DTO;
 
 namespace ParentControlApi.Controllers
 {
@@ -11,40 +13,47 @@ namespace ParentControlApi.Controllers
     [Route("api/[controller]")]
     public class ScheduleController : Controller
     {
-        private IRepository<Schedule> _scheduleRepository;
-
-        public ScheduleController(IRepository<Schedule> scheduleRepository) => _scheduleRepository = scheduleRepository;
+        private readonly IScheduleService _scheduleService;
+        private readonly IMapper _mapper;
+        public ScheduleController(IScheduleService scheduleService, IMapper mapper){
+            _scheduleService = scheduleService;
+            _mapper = mapper;
+        } 
        
         // GET api/values
         [HttpGet]
-        public IEnumerable<Schedule> Get()
+        public IEnumerable<ScheduleDTO> Get([FromQuery]GetSchedulesParams getScheduleParams)
         {
-            return _scheduleRepository.GetAll();
+            return _scheduleService.GetAll(getScheduleParams.DeviceId)
+            .Select(s => _mapper.Map<ScheduleDTO>(s));
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public ScheduleDTO Get(int id)
         {
-            return "value";
+            return _mapper.Map<ScheduleDTO>(_scheduleService.Get(id));
         }
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody]string value)
+        public void Post([FromBody]CreateScheduleParams parameters)
         {
+            _scheduleService.Create(_mapper.Map<Schedule>(parameters));
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public void Put([FromBody]UpdateScheduleParams parameters)
         {
+            _scheduleService.Create(_mapper.Map<Schedule>(parameters));
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            _scheduleService.Remove(id);
         }
     }
 }
