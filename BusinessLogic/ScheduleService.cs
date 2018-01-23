@@ -58,14 +58,16 @@ public class ScheduleService : IScheduleService
         if(exisitngSchedule != null)
             throw new ScheduleAlreadyExistsException();
         
-        var updatedSchedule = Mapper.Map<Schedule, Schedule>(newSchedule, oldSchedule);
-        scheduleRepositor.Edit(updatedSchedule);
+        oldSchedule.AllowWithNoTimesheet = newSchedule.AllowWithNoTimesheet;
+        oldSchedule.Name = newSchedule.Name;
+        oldSchedule.DeviceId = newSchedule.DeviceId;
+        scheduleRepositor.Edit(oldSchedule);
     }
 
     private Schedule GetSchedule(int Id){
          var devices = deviceService.GetAll();
         var schedule = scheduleRepositor.Get(Id);
-        if(devices.Any(d => d == schedule.Device)){
+        if(devices.Any(d => d.Id == schedule.DeviceId)){
             return schedule;
         }
         return null;

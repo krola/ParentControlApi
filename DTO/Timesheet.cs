@@ -9,7 +9,5 @@ namespace ParentControlApi.DTO
         public DateTime? DateTo { get; set; }
         public TimeSpan Time { get; set; }
         public DateTime CreateTime { get; set; }
-
-        public ScheduleDTO Schedule { get; set; }
     }
 }

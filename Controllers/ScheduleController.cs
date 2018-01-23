@@ -44,9 +44,11 @@ namespace ParentControlApi.Controllers
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put([FromBody]UpdateScheduleParams parameters)
+        public void Put(int id, [FromBody]UpdateScheduleParams parameters)
         {
-            _scheduleService.Create(_mapper.Map<Schedule>(parameters));
+            var schedule = _mapper.Map<Schedule>(parameters);
+            schedule.Id = id;
+            _scheduleService.Update(schedule);
         }
 
         // DELETE api/values/5

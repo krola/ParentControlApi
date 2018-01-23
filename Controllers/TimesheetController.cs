@@ -38,9 +38,11 @@ namespace ParentControlApi.Controllers
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put([FromBody]UpdateTimesheetParams parameters)
+        public void Put(int id, [FromBody]UpdateTimesheetParams parameters)
         {
-            _timesheetService.Update(_mapper.Map<Timesheet>(parameters));
+            var timesheet = _mapper.Map<Timesheet>(parameters);
+            timesheet.Id = id;
+            _timesheetService.Update(timesheet);
         }
 
         // DELETE api/values/5

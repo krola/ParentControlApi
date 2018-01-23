@@ -64,8 +64,8 @@ public class DeviceService : IDeviceService
         if(GetAllDevices().Any(d => d.Name == newDevice.Name))
             throw new DeviceAlreadyExistsException();
 
-        var updatedDevice = Mapper.Map<Device, Device>(newDevice, oldDevice);
-        deviceRepositor.Edit(updatedDevice);
+        oldDevice.Name = newDevice.Name;
+        deviceRepositor.Edit(oldDevice);
     }
 
     public void Remove(int Id)

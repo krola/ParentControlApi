@@ -39,8 +39,15 @@ public class TimesheerService : ITimesheerService
 
     public void Update(Timesheet newTimesheet)
     {
-        var timesheet = timesheetRepositor.FindBy(t => t.Id == newTimesheet.Id).SingleOrDefault();
-        var updatedtimesheet = Mapper.Map<Timesheet, Timesheet>(newTimesheet, timesheet);
-        timesheetRepositor.Edit(updatedtimesheet);
+        var timesheet = timesheetRepositor.Get(newTimesheet.Id);
+
+        if(timesheet == null){
+            throw new TimesheetNonAlreadyExistsException();
+        }
+        timesheet.CreateTime = newTimesheet.CreateTime;
+        timesheet.DateFrom = newTimesheet.DateFrom;
+        timesheet.DateTo = newTimesheet.DateTo;
+        timesheet.Time = newTimesheet.Time;
+        timesheetRepositor.Edit(timesheet );
     }
 }
