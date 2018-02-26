@@ -14,7 +14,6 @@ public class MappingProfile : Profile {
         CreateMap<UpdateScheduleParams, Schedule>();
 
         CreateMap<Session, SessionDTO>();
-        CreateMap<GetAllSessionsParams, Session>();
         CreateMap<GetDateSessionsParams, Session>();
         CreateMap<CreateSessionParams, Session>();
         CreateMap<UpdateSessionParams, Session>();

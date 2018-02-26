@@ -8,6 +8,7 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using ParentControlApi.DTO;
 
 [Route("api/[controller]")]
     public class AuthorizationController : Controller
@@ -30,7 +31,9 @@ using Microsoft.IdentityModel.Tokens;
 
             var token = GenerateToken(user, DateTime.Now.AddHours(1));
 
-            return Ok(token);
+            return Ok(new Authorization(){
+                Token = token
+            });
         }
 
         private string GenerateToken(User user, DateTime expires)

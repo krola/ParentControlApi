@@ -1,9 +1,10 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 public class Session
     {
-        public int Id { get; set; }
-        public Guid SessionId { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid Id { get; set; }
 
         public DateTime StarTime { get; set; }
 

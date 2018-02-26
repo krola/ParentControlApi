@@ -41,7 +41,7 @@ public class SessionService : ISessionService{
 
     public void Update(Session newSession)
     {
-        var oldSession = sessionRepositor.FindBy(t => t.SessionId == newSession.SessionId).SingleOrDefault();
+        var oldSession = sessionRepositor.FindBy(t => t.Id == newSession.Id).SingleOrDefault();
         if(oldSession == null){
             throw new SessionNotExistsException();
         }

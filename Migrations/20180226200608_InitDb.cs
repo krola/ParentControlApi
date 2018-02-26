@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace ParentControlApi.Migrations
 {
-    public partial class InitDatabase : Migration
+    public partial class InitDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -67,11 +67,9 @@ namespace ParentControlApi.Migrations
                 name: "Sessions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<Guid>(nullable: false),
                     DeviceId = table.Column<int>(nullable: false),
                     EndTime = table.Column<DateTime>(nullable: true),
-                    SessionId = table.Column<Guid>(nullable: false),
                     StarTime = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>

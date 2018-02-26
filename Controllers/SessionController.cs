@@ -21,15 +21,15 @@ namespace ParentControlApi.Controllers
         }
        
         // GET api/values
-        [HttpGet]
-        public IEnumerable<SessionDTO> Get([FromQuery] GetAllSessionsParams parameters)
+        [HttpGet("{deviceId}")]
+        public IEnumerable<SessionDTO> Get(int deviceId)
         {
-            return _sessionService.GetAll(parameters.DeviceId)
+            return _sessionService.GetAll(deviceId)
             .Select(s => _mapper.Map<SessionDTO>(s));
         }
 
-        // GET api/values/5
-        [HttpGet("{id}")]
+        // GET api/values
+        [HttpGet]
         public IEnumerable<SessionDTO> Get([FromQuery] GetDateSessionsParams parameters)
         {
             return _sessionService.GetForDay(parameters.DeviceId, parameters.Date)
@@ -43,8 +43,8 @@ namespace ParentControlApi.Controllers
             _sessionService.Create(_mapper.Map<Session>(parameters));
         }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
+        // PUT api/values
+        [HttpPut]
         public void Put([FromBody]UpdateSessionParams parameters)
         {
             _sessionService.Update(_mapper.Map<Session>(parameters));
