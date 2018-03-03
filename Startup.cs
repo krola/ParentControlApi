@@ -75,6 +75,18 @@ namespace ParentControlApi
             services.AddTransient<ITimesheerService, TimesheerService>();
             services.AddTransient<ISessionService, SessionService>();
             services.AddAutoMapper();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                    builder =>
+                    {
+                        builder
+                        .AllowAnyOrigin() 
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                    });
+            });
             services.AddMvc();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
@@ -87,6 +99,7 @@ namespace ParentControlApi
                 app.UseDeveloperExceptionPage();
             }
             app.UseAuthentication();
+            app.UseCors("AllowAll");
             app.UseMvc();
             app.UseSwagger();
             app.UseSwaggerUI(c =>
