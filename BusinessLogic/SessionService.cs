@@ -45,7 +45,10 @@ public class SessionService : ISessionService{
         if(oldSession == null){
             Create(newSession);
         }
-        var updatedSession = Mapper.Map<Session, Session>(newSession, oldSession);
-        sessionRepositor.Edit(updatedSession);
+        
+        oldSession.StarTime = newSession.StarTime;
+        oldSession.EndTime = newSession.EndTime;
+
+        sessionRepositor.Edit(oldSession);
     }
 }
