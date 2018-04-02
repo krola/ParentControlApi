@@ -43,7 +43,7 @@ public class SessionService : ISessionService{
     {
         var oldSession = sessionRepositor.FindBy(t => t.Id == newSession.Id).SingleOrDefault();
         if(oldSession == null){
-            throw new SessionNotExistsException();
+            Create(newSession);
         }
         var updatedSession = Mapper.Map<Session, Session>(newSession, oldSession);
         sessionRepositor.Edit(updatedSession);
