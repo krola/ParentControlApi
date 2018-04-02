@@ -15,8 +15,12 @@ public class MappingProfile : Profile {
 
         CreateMap<Session, SessionDTO>();
         CreateMap<GetDateSessionsParams, Session>();
-        CreateMap<CreateSessionParams, Session>();
-        CreateMap<UpdateSessionParams, Session>();
+        CreateMap<CreateSessionParams, Session>()
+            .ForMember(dest => dest.StarTime, opt => opt.MapFrom(src => src.SessionStart))
+            .ForMember(dest => dest.EndTime, opt => opt.MapFrom(src => src.SessionEnd));
+        CreateMap<UpdateSessionParams, Session>()
+            .ForMember(dest => dest.StarTime, opt => opt.MapFrom(src => src.SessionStart))
+            .ForMember(dest => dest.EndTime, opt => opt.MapFrom(src => src.SessionEnd));
 
         CreateMap<Timesheet, TimesheetDTO>();
         CreateMap<GetTimesheetParams, Timesheet>();
