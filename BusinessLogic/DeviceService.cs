@@ -10,7 +10,7 @@ public interface IDeviceService
 {
     Device Get(int Id);
     IEnumerable<Device> GetAll();
-    void Create(Device device);
+    Device Create(Device device);
     void Update(Device newDevice);
     void Remove(int Id);
 
@@ -35,7 +35,7 @@ public class DeviceService : IDeviceService
         return deviceRepositor.Get(Id);
     }
 
-    public void Create(Device device)
+    public Device Create(Device device)
     {
         if(GetAllDevices().Any(d => d.Name == device.Name))
             throw new DeviceAlreadyExistsException();
@@ -43,6 +43,8 @@ public class DeviceService : IDeviceService
         var user = userProvider.GetAuthorizedUser();
         device.UserId = user.Id;
         deviceRepositor.Add(device);
+        return deviceRepositor.FindBy(d => d.Name == device.Name && device.UserId == user.Id)
+                                .First();
     }
 
     private IEnumerable<Device> GetAllDevices()

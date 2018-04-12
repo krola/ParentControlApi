@@ -36,9 +36,10 @@ namespace ParentControlApi.Controllers
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody]CreateDeviceParams device)
+        public DeviceDTO Post([FromBody]CreateDeviceParams device)
         {
-            _deviceService.Create(_mapper.Map<Device>(device));
+            var newDevice = _deviceService.Create(_mapper.Map<Device>(device));
+            return _mapper.Map<DeviceDTO>(newDevice);
         }
 
         // PUT api/values/5
