@@ -7,6 +7,8 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Events;
 
 namespace ParentControlApi
 {
@@ -14,7 +16,26 @@ namespace ParentControlApi
     {
         public static void Main(string[] args)
         {
+            Log.Logger = new LoggerConfiguration()
+                        .MinimumLevel.Error()
+                        .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                        .Enrich.FromLogContext()
+                        .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day)
+                        .CreateLogger();
+
+        try
+        {
+            Log.Information("Starting web host");
             BuildWebHost(args).Run();
+        }
+        catch (Exception ex)
+        {
+            Log.Fatal(ex, "Host terminated unexpectedly");
+        }
+        finally
+        {
+            Log.CloseAndFlush();
+        }
         }
 
         public static IWebHost BuildWebHost(string[] args) =>
@@ -28,6 +49,7 @@ namespace ParentControlApi
                         .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
                 })
                 .UseStartup<Startup>()
+                .UseSerilog() 
                 .Build();
     }
 }
