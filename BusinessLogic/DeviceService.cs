@@ -73,6 +73,9 @@ public class DeviceService : IDeviceService
     public void Remove(int Id)
     {
         var entity = GetEntity(Id);
+        if(entity == null){
+            throw new DeviceNotExistException();
+        }
         deviceRepositor.Delete(entity);
     }
 }

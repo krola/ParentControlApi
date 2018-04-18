@@ -47,6 +47,9 @@ public class ScheduleService : IScheduleService
     public void Remove(int Id)
     {
         var schedule = GetSchedule(Id);
+        if(schedule == null){
+            throw new ScheduleNotExistsException();
+        }
         scheduleRepositor.Delete(schedule);
     }
 

@@ -34,6 +34,9 @@ public class TimesheerService : ITimesheerService
     public void Remove(int Id)
     {
         var timesheet = timesheetRepositor.FindBy(t => t.Id == Id).SingleOrDefault();
+        if(timesheet == null){
+            throw new TimesheetNonExistsException();
+        }
         timesheetRepositor.Delete(timesheet);
     }
 

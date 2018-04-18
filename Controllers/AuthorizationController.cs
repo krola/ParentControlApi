@@ -29,14 +29,16 @@ using ParentControlApi.DTO;
             if (user == null)
                 return Unauthorized();
 
-            var token = GenerateToken(user, DateTime.Now.AddHours(1));
+            var expires = new TimeSpan(0,60,0);
+            var token = GenerateToken(user, expires);
 
             return Ok(new Authorization(){
-                Token = token
+                Token = token,
+                Expires = expires.TotalMinutes
             });
         }
 
-        private string GenerateToken(User user, DateTime expires)
+        private string GenerateToken(User user, TimeSpan expiresTime)
         {
             var handler = new JwtSecurityTokenHandler();
 
@@ -56,7 +58,7 @@ using ParentControlApi.DTO;
                 Audience = "Audience",
                 SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256),
                 Subject = identity,
-                Expires = expires,
+                Expires = DateTime.Now.AddMinutes(expiresTime.TotalMinutes),
                 NotBefore = DateTime.Now.Subtract(TimeSpan.FromMinutes(30))
             });
             return handler.WriteToken(securityToken);

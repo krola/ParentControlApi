@@ -100,6 +100,7 @@ namespace ParentControlApi
             }
             app.UseAuthentication();
             app.UseCors("AllowAll");
+            app.UseMiddleware(typeof(ErrorHandlerMiddleware));
             app.UseMvc();
             app.UseSwagger();
             app.UseSwaggerUI(c =>
