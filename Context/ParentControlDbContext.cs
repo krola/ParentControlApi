@@ -16,5 +16,6 @@ public class ParentControlContext : DbContext
         public DbSet<Schedule> Schedules { get; set; }
         public DbSet<Timesheet> Timesheets { get; set; }
         public DbSet<Session> Sessions { get; set; }
+        public DbSet<UserSessions> UserSessions { get; set; }
 
     }

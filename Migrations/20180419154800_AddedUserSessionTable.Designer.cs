@@ -10,9 +10,10 @@ using System;
 namespace ParentControlApi.Migrations
 {
     [DbContext(typeof(ParentControlContext))]
-    partial class ParentControlContextModelSnapshot : ModelSnapshot
+    [Migration("20180419154800_AddedUserSessionTable")]
+    partial class AddedUserSessionTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

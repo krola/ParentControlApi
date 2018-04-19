@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 
@@ -19,7 +20,7 @@ public class UserProvider : IUserProvider
     public User GetAuthorizedUser()
     {
         var contextUser = httpContextAccessor.HttpContext.User;
-        var userId = int.Parse(contextUser.Claims.First(u => u.Type == "ID").Value);
+        var userId = int.Parse(contextUser.Claims.First(u => u.Type == JwtRegisteredClaimNames.Sid).Value);
         var user = userRepository.Get(userId);
         return user;
     }

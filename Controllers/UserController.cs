@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ParentControlApi.Controllers
 {
-    [Authorize("Bearer")]
+    [Authorize()]
     [Route("api/[controller]")]
     public class UserController : Controller
     {

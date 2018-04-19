@@ -35,29 +35,16 @@ namespace ParentControlApi
         {
             services.AddDbContext<ParentControlContext>();
 
-             services.AddAuthorization(auth =>
-            {
-                auth.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
-                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme‌​)
-                    .RequireAuthenticatedUser().Build());
-            });
-
-            services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
-                var secretKey = Encoding.ASCII.GetBytes(Configuration["TokenAuthentication:SecretKey"]);
-                var signingKey = new SymmetricSecurityKey(secretKey);
                 options.TokenValidationParameters = new TokenValidationParameters()
                 {
-                    IssuerSigningKey = signingKey,
-                    ValidAudience = "Audience",
-                    ValidIssuer = "Issuer",
-                    ValidateIssuerSigningKey = true,
+                    ValidateIssuer = false,
                     ValidateLifetime = true,
-                    ClockSkew = TimeSpan.FromMinutes(0)
+                    ValidateIssuerSigningKey = true,
+                    ValidateAudience = false,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Token:Key"]))
                 };
             });
 
@@ -67,9 +54,10 @@ namespace ParentControlApi
                 c.AddSecurityDefinition("Bearer", new ApiKeyScheme() { In = "header", Description = "Please insert token with Bearer into field", Name = "Authorization", Type = "apiKey" });
             });
 
-            services.Configure<TokenAuthentication>(Configuration.GetSection("TokenAuthentication"));
+            services.Configure<TokenConfig>(Configuration.GetSection("Token"));
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<IUserProvider, UserProvider>();
+            services.AddTransient<IAuthorizationService, AuthorizationService>();
             services.AddTransient<IDeviceService, DeviceService>();
             services.AddTransient<IScheduleService, ScheduleService>();
             services.AddTransient<ITimesheerService, TimesheerService>();

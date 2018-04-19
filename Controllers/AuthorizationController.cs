@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -13,54 +14,40 @@ using ParentControlApi.DTO;
 [Route("api/[controller]")]
     public class AuthorizationController : Controller
     {
-    private readonly IOptions<TokenAuthentication> _tokenConfig;
-    private readonly IRepository<User> userRepository;
+    private readonly IAuthorizationService _authorizationService;
+    private readonly IRepository<User> _userRepository;
+    private readonly IUserProvider _userProvider;
 
-    public AuthorizationController(IOptions<TokenAuthentication> tokenConfig, IRepository<User> userRepository) {
-        this._tokenConfig = tokenConfig;
-        this.userRepository = userRepository;
+    public AuthorizationController(IAuthorizationService authorizationService, 
+    IRepository<User> userRepository,
+    IUserProvider userProvider) {
+        _authorizationService = authorizationService;
+        _userRepository = userRepository;
+        _userProvider = userProvider;
     }
 
         [HttpPost]
+        [Route("Token")]
         public IActionResult GetToken([FromBody]LogInDTO authorizationData)
         {
-            var user = userRepository.FindBy(u => u.Name == authorizationData.UserName && 
+            var user = _userRepository.FindBy(u => u.Name == authorizationData.UserName && 
             u.Password == authorizationData.Password).SingleOrDefault();
             if (user == null)
                 return Unauthorized();
 
-            var expires = new TimeSpan(0,60,0);
-            var token = GenerateToken(user, expires);
-
-            return Ok(new Authorization(){
-                Token = token,
-                Expires = expires.TotalMinutes
-            });
+            return Ok(_authorizationService.GenerateTokens(user));
         }
 
-        private string GenerateToken(User user, TimeSpan expiresTime)
+        [HttpPost]
+        [Route("RefreshToken")]
+        [Authorize()]
+        public IActionResult RefreshToken([FromBody]RefreshTokenDTO refreshToken)
         {
-            var handler = new JwtSecurityTokenHandler();
+            var user = _userProvider.GetAuthorizedUser();
+            if (user == null)
+                return Unauthorized();
 
-            ClaimsIdentity identity = new ClaimsIdentity(
-                new GenericIdentity(user.Name, "TokenAuth"),
-                new[] {
-                    new Claim("ID", user.Id.ToString())
-                }
-            );
-
-            var secretKey = Encoding.ASCII.GetBytes(_tokenConfig.Value.SecretKey);
-            var signingKey = new SymmetricSecurityKey(secretKey);
-            var securityToken = handler.CreateToken(new SecurityTokenDescriptor
-            {
-                
-                Issuer = "Issuer",
-                Audience = "Audience",
-                SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256),
-                Subject = identity,
-                Expires = DateTime.Now.AddMinutes(expiresTime.TotalMinutes),
-                NotBefore = DateTime.Now.Subtract(TimeSpan.FromMinutes(30))
-            });
-            return handler.WriteToken(securityToken);
+            var tokens = _authorizationService.RefreshToken(user, refreshToken.RefreshToken);
+            return Ok(tokens);
         }
     }

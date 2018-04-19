@@ -9,7 +9,7 @@ using ParentControlApi.DTO;
 
 namespace ParentControlApi.Controllers
 {
-    [Authorize("Bearer")]
+    [Authorize()]
     [Route("api/[controller]")]
     public class TimesheetController : Controller
     {
