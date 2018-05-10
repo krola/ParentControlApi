@@ -1,5 +1,5 @@
 public class ScheduleNotExistsException : BaseNotExistException
 {
-    const string Message = "Schedule not exist!";
-    public ScheduleNotExistsException() : base(Message) { }
+    const string Description = "Schedule not exist!";
+    public ScheduleNotExistsException() : base(Description) { }
 }

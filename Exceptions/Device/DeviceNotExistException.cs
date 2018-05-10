@@ -1,5 +1,5 @@
 public class DeviceNotExistException : BaseNotExistException
 {
-    const string Message = "Device not exist!";
-    public DeviceNotExistException() : base(Message) { }
+    const string Description = "Device not exist!";
+    public DeviceNotExistException() : base(Description) { }
 }
