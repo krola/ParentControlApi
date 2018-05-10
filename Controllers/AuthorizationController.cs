@@ -40,7 +40,6 @@ using ParentControlApi.DTO;
 
         [HttpPost]
         [Route("RefreshToken")]
-        [Authorize()]
         public IActionResult RefreshToken([FromBody]RefreshTokenDTO refreshToken)
         {
             var user = _userProvider.GetAuthorizedUser();
