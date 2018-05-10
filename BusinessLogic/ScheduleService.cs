@@ -7,7 +7,7 @@ public interface IScheduleService
 {
     Schedule Get(int Id);
     IEnumerable<Schedule> GetAll(int deviceId);
-    void Create(Schedule schedule);
+    Schedule Create(Schedule schedule);
     void Update(Schedule newSchedule);
     void Remove(int Id);
 }
@@ -22,7 +22,7 @@ public class ScheduleService : IScheduleService
         this.deviceService = deviceService;
     }
 
-    public void Create(Schedule schedule)
+    public Schedule Create(Schedule schedule)
     {
         var device = deviceService.Get(schedule.DeviceId);
         if(GetAll(schedule.DeviceId).Any(s => s.Name == schedule.Name))
@@ -30,6 +30,7 @@ public class ScheduleService : IScheduleService
 
         schedule.DeviceId = device.Id;
         scheduleRepositor.Add(schedule);
+        return schedule;
     }
 
     public Schedule Get(int Id)
@@ -56,10 +57,8 @@ public class ScheduleService : IScheduleService
     public void Update(Schedule newSchedule)
     {
         var oldSchedule = GetSchedule(newSchedule.Id);
-        var exisitngSchedule = scheduleRepositor.FindBy(s => s.DeviceId == newSchedule.DeviceId &&
-            s.Name == newSchedule.Name).SingleOrDefault();
-        if(exisitngSchedule != null)
-            throw new ScheduleAlreadyExistsException();
+        if(oldSchedule == null)
+            throw new ScheduleNotExistsException();
         
         oldSchedule.AllowWithNoTimesheet = newSchedule.AllowWithNoTimesheet;
         oldSchedule.Name = newSchedule.Name;

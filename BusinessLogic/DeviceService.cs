@@ -43,8 +43,7 @@ public class DeviceService : IDeviceService
         var user = userProvider.GetAuthorizedUser();
         device.UserId = user.Id;
         deviceRepositor.Add(device);
-        return deviceRepositor.FindBy(d => d.Name == device.Name && device.UserId == user.Id)
-                                .First();
+        return device;
     }
 
     private IEnumerable<Device> GetAllDevices()

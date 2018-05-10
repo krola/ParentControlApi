@@ -28,3 +28,13 @@ c:\Users\sg0301597\Documents\ParentControlApi\bin\Debug\netcoreapp2.0\ParentCont
 c:\Users\sg0301597\Documents\ParentControlApi\bin\Debug\netcoreapp2.0\ParentControlApi.runtimeconfig.dev.json
 c:\Users\sg0301597\Documents\ParentControlApi\bin\Debug\netcoreapp2.0\ParentControlApi.dll
 c:\Users\sg0301597\Documents\ParentControlApi\bin\Debug\netcoreapp2.0\ParentControlApi.pdb
+C:\Code\ParentControlApi\bin\Debug\netcoreapp2.0\ParentControlApi.deps.json
+C:\Code\ParentControlApi\bin\Debug\netcoreapp2.0\ParentControlApi.runtimeconfig.json
+C:\Code\ParentControlApi\bin\Debug\netcoreapp2.0\ParentControlApi.runtimeconfig.dev.json
+C:\Code\ParentControlApi\bin\Debug\netcoreapp2.0\ParentControlApi.dll
+C:\Code\ParentControlApi\bin\Debug\netcoreapp2.0\ParentControlApi.pdb
+C:\Code\ParentControlApi\obj\Debug\netcoreapp2.0\ParentControlApi.csproj.CoreCompileInputs.cache
+C:\Code\ParentControlApi\obj\Debug\netcoreapp2.0\ParentControlApi.AssemblyInfoInputs.cache
+C:\Code\ParentControlApi\obj\Debug\netcoreapp2.0\ParentControlApi.AssemblyInfo.cs
+C:\Code\ParentControlApi\obj\Debug\netcoreapp2.0\ParentControlApi.dll
+C:\Code\ParentControlApi\obj\Debug\netcoreapp2.0\ParentControlApi.pdb

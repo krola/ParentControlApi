@@ -31,25 +31,28 @@ namespace ParentControlApi.Controllers
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody]CreateTimesheetParams parameters)
+        public IActionResult Post([FromBody]CreateTimesheetParams parameters)
         {
-            _timesheetService.Create(_mapper.Map<Timesheet>(parameters));
+            var newTimesheet = _timesheetService.Create(_mapper.Map<Timesheet>(parameters));
+            return Ok(_mapper.Map<TimesheetDTO>(newTimesheet));
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]UpdateTimesheetParams parameters)
+        public IActionResult Put(int id, [FromBody]UpdateTimesheetParams parameters)
         {
             var timesheet = _mapper.Map<Timesheet>(parameters);
             timesheet.Id = id;
             _timesheetService.Update(timesheet);
+            return NoContent();
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
             _timesheetService.Remove(id);
+            return NoContent();
         }
     }
 }

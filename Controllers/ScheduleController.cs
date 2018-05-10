@@ -37,25 +37,28 @@ namespace ParentControlApi.Controllers
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody]CreateScheduleParams parameters)
+        public IActionResult Post([FromBody]CreateScheduleParams parameters)
         {
-            _scheduleService.Create(_mapper.Map<Schedule>(parameters));
+            var newSchedule = _scheduleService.Create(_mapper.Map<Schedule>(parameters));
+            return Ok(_mapper.Map<ScheduleDTO>(newSchedule));
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]UpdateScheduleParams parameters)
+        public IActionResult Put(int id, [FromBody]UpdateScheduleParams parameters)
         {
             var schedule = _mapper.Map<Schedule>(parameters);
             schedule.Id = id;
             _scheduleService.Update(schedule);
+            return NoContent();
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
             _scheduleService.Remove(id);
+            return NoContent();
         }
     }
 }

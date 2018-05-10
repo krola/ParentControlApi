@@ -36,26 +36,28 @@ namespace ParentControlApi.Controllers
 
         // POST api/values
         [HttpPost]
-        public DeviceDTO Post([FromBody]CreateDeviceParams device)
+        public IActionResult Post([FromBody]CreateDeviceParams device)
         {
             var newDevice = _deviceService.Create(_mapper.Map<Device>(device));
-            return _mapper.Map<DeviceDTO>(newDevice);
+            return Ok(_mapper.Map<DeviceDTO>(newDevice));
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]CreateDeviceParams device)
+        public IActionResult Put(int id, [FromBody]CreateDeviceParams device)
         {
             var domainDevice = _mapper.Map<Device>(device);
             domainDevice.Id = id;
             _deviceService.Update(domainDevice);
+            return NoContent();
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
             _deviceService.Remove(id);
+            return NoContent();
         }
     }
 }

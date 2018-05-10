@@ -7,7 +7,7 @@ using ParentControlApi.DTO;
 public interface ITimesheerService
 {
     IEnumerable<Timesheet> GetAll(int scheduleId);
-    void Create(Timesheet timesheet);
+    Timesheet Create(Timesheet timesheet);
     void Update(Timesheet newTimesheet);
     void Remove(int Id);
 }
@@ -20,9 +20,10 @@ public class TimesheerService : ITimesheerService
         this.scheduleService = scheduleService;
         this.timesheetRepositor = timesheetRepositor;
     }
-    public void Create(Timesheet timesheet)
+    public Timesheet Create(Timesheet timesheet)
     {
         timesheetRepositor.Add(timesheet);
+        return timesheet;
     }
 
     public IEnumerable<Timesheet> GetAll(int scheduleId)
