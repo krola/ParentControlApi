@@ -75,7 +75,9 @@ namespace ParentControlApi
                         .AllowCredentials();
                     });
             });
-            services.AddMvc();
+            services.AddMvc().AddJsonOptions(
+                options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
