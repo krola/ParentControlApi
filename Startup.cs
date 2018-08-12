@@ -18,6 +18,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using ParentControlApi.DTO;
 using Swashbuckle.AspNetCore.Swagger;
+using Websocket;
+using WebSocketManager;
 
 namespace ParentControlApi
 {
@@ -56,6 +58,8 @@ namespace ParentControlApi
 
             services.Configure<TokenConfig>(Configuration.GetSection("Token"));
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddTransient<WebSocketConnectionManager>();
+            services.AddSingleton<MobileAppWebSocketHandler>();
             services.AddTransient<IUserProvider, UserProvider>();
             services.AddTransient<IAuthorizationService, AuthorizationService>();
             services.AddTransient<IDeviceService, DeviceService>();
@@ -82,7 +86,7 @@ namespace ParentControlApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -97,6 +101,9 @@ namespace ParentControlApi
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Parent Control API V1");
             });
+            app.UseWebSockets();
+            app.Map("/sync", (_app) => _app.UseMiddleware<WebSocketManagerMiddleware>(serviceProvider.GetService<MobileAppWebSocketHandler>()));
+
         }
     }
 }

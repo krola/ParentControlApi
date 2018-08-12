@@ -14,6 +14,9 @@ public interface IDeviceService
     void Update(Device newDevice);
     void Remove(int Id);
 
+    void SetOnline(int deviceId, string connectionId);
+    void SetOffline(int deviceId);
+
 }
 public class DeviceService : IDeviceService
 {
@@ -76,5 +79,19 @@ public class DeviceService : IDeviceService
             throw new DeviceNotExistException();
         }
         deviceRepositor.Delete(entity);
+    }
+
+    public void SetOnline(int deviceId, string connectionId)
+    {
+        var device = Get(deviceId);
+        device.ConnectionId = connectionId;
+        Update(device);
+    }
+
+    public void SetOffline(int deviceId)
+    {
+        var device = Get(deviceId);
+        device.ConnectionId = null;
+        Update(device);
     }
 }
