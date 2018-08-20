@@ -1,14 +1,24 @@
-using Newtonsoft.Json;
-
-public class BasePocket {
-    public string Type { get; set; }
+public enum ResponseStatus{
+    Done,
+    Error
 }
 
-public class RequestPocket : BasePocket
-{
-        public Header Header { get; set; }
+public class ClientRequestPocket {
+    public string Command {get; set;}
 }
 
-public abstract class Response<T> : BasePocket where T: class {
-        public abstract T Data {get; set;}
+public class ServerRequestPocket : ClientRequestPocket{
+    public string Origin {get; set;}
 }
+
+public class ClientResponsePocket : ClientRequestPocket{
+    public ResponseStatus Status{ get; set;}
+
+    public string Payload {get; set;}
+}
+
+public class ServerResposePocket : ServerRequestPocket {
+    public string Payload {get; set;}
+}
+
+

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.WebSockets;
 using System.Threading;
@@ -9,61 +10,39 @@ namespace Websocket
 {
     public class WebSocketConnectionManager
     {
-        private ConcurrentDictionary<string, WebSocket> _sockets = new ConcurrentDictionary<string, WebSocket>();
-
-        private ConcurrentBag<Hub> _hubs = new ConcurrentBag<Hub>();
-        public WebSocket GetSocketById(string id)
+        private List<Socket> _sockets = new List<Socket>();
+        public Socket GetSocketById(string id)
         {
-            return _sockets.FirstOrDefault(p => p.Key == id).Value;
+            return _sockets.FirstOrDefault(p => p.SocketId  == id);
         }
 
-        public ConcurrentDictionary<string, WebSocket> GetAll()
+        public Socket GetSocket(string deviceId, SocketType type)
+        {
+            return _sockets.FirstOrDefault(p => p.DeviceId == deviceId && p.Type == type);
+        }
+
+
+        public List<Socket> GetAll()
         {
             return _sockets;
         }
 
-        public string GetId(WebSocket socket)
+        public string GetId(Socket socket)
         {
-            return _sockets.FirstOrDefault(p => p.Value == socket).Key;
+            return _sockets.FirstOrDefault(p => p == socket).SocketId;
         }
-        public void AddSocket(WebSocket socket)
+        public void AddSocket(Socket socket)
         {
-            _sockets.TryAdd(CreateConnectionId(), socket);
-        }
-
-        public string AddClient(WebSocket socket, int deviceId){
-            var hub = _hubs.FirstOrDefault(h => h.Id == deviceId);
-
-            if(hub == null){
-                hub = new Hub(){
-                    Id = deviceId
-                };
-                _hubs.Add(hub);
-            }
-            var key = CreateConnectionId();
-            hub.Clients.TryAdd(key, socket);
-            return key.ToString();
-        }
-
-        public void AddService(WebSocket socket, int deviceId){
-            var hub = _hubs.FirstOrDefault(h => h.Id == deviceId);
-
-            if(hub == null){
-                hub = new Hub(){
-                    Id = deviceId
-                };
-                _hubs.Add(hub);
-            }
-  
-            hub.ServerSocket = socket;
+            socket.SocketId = CreateConnectionId();
+            _sockets.Add(socket);
         }
 
         public async Task RemoveSocket(string id)
         {
-            WebSocket socket;
-            _sockets.TryRemove(id, out socket);
+            Socket socket = _sockets.First(s => s.SocketId == id);
+            _sockets.Remove(socket);
 
-            await socket.CloseAsync(closeStatus: WebSocketCloseStatus.NormalClosure, 
+            await socket.WebSocket.CloseAsync(closeStatus: WebSocketCloseStatus.NormalClosure, 
                                     statusDescription: "Closed by the WebSocketManager", 
                                     cancellationToken: CancellationToken.None);
         }

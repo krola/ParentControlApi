@@ -3,6 +3,7 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Websocket;
 
 namespace WebSocketManager
@@ -16,22 +17,24 @@ namespace WebSocketManager
             WebSocketConnectionManager = webSocketConnectionManager;
         }
 
-        public virtual async Task OnConnected(WebSocket socket)
+        public virtual async Task OnConnected(Socket socket)
         {
             WebSocketConnectionManager.AddSocket(socket);
         }
 
-        public virtual async Task OnDisconnected(WebSocket socket)
+        public virtual async Task OnDisconnected(Socket socket)
         {
             await WebSocketConnectionManager.RemoveSocket(WebSocketConnectionManager.GetId(socket));
         }
 
-        public async Task SendMessageAsync(WebSocket socket, string message)
+        public async Task SendMessageAsync(Socket socket, object data)
         {
-            if(socket.State != WebSocketState.Open)
+            if(socket.WebSocket.State != WebSocketState.Open)
                 return;
 
-            await socket.SendAsync(buffer: new ArraySegment<byte>(array: Encoding.ASCII.GetBytes(message),
+            var message = JsonConvert.SerializeObject(data);
+
+            await socket.WebSocket.SendAsync(buffer: new ArraySegment<byte>(array: Encoding.ASCII.GetBytes(message),
                                                                   offset: 0, 
                                                                   count: message.Length),
                                    messageType: WebSocketMessageType.Text,
@@ -48,11 +51,11 @@ namespace WebSocketManager
         {
             foreach(var pair in WebSocketConnectionManager.GetAll())
             {
-                if(pair.Value.State == WebSocketState.Open)
-                    await SendMessageAsync(pair.Value, message);
+                if(pair.WebSocket.State == WebSocketState.Open)
+                    await SendMessageAsync(pair, message);
             }
         }
 
-        public abstract Task ReceiveAsync(WebSocket socket, WebSocketReceiveResult result, byte[] buffer);
+        public abstract Task ReceiveAsync(Socket socket, WebSocketReceiveResult result, byte[] buffer);
     }
 }

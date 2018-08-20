@@ -12894,27 +12894,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Krzysiek\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\": {},
+    "C:\\Users\\krzysztof.rola\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Code\\ParentControlApi\\ParentControlApi\\ParentControlApi.csproj",
+      "projectUniqueName": "C:\\Code\\ParentControlApi\\ParentControlApi.csproj",
       "projectName": "ParentControlApi",
-      "projectPath": "C:\\Code\\ParentControlApi\\ParentControlApi\\ParentControlApi.csproj",
-      "packagesPath": "C:\\Users\\Krzysiek\\.nuget\\packages\\",
-      "outputPath": "C:\\Code\\ParentControlApi\\ParentControlApi\\obj\\",
+      "projectPath": "C:\\Code\\ParentControlApi\\ParentControlApi.csproj",
+      "packagesPath": "C:\\Users\\krzysztof.rola\\.nuget\\packages\\",
+      "outputPath": "C:\\Code\\ParentControlApi\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\",
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\Krzysiek\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.Fallback.config"
+        "C:\\Users\\krzysztof.rola\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp2.0"

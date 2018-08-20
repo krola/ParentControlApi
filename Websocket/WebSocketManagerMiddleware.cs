@@ -46,22 +46,24 @@ namespace WebSocketManager
             //await _next.Invoke(context);
         }
 
-        private Socket ReadSocketParams(HttpContext context)
+        private async Task<Socket> ReadSocketParams(HttpContext context)
         {
+            int type = int.TryParse(context.Request.Query["Type"], out type) ? type : 0;
             var socketParam = new Socket(){
                 DeviceId = context.Request.Query["DeviceId"],
-                Type = (SocketType)int.Parse(context.Request.Query["Type"])
+                Type = (SocketType)type,
+                WebSocket = await context.WebSockets.AcceptWebSocketAsync()
             };
             return socketParam;
         }
 
-        private async Task Receive(WebSocket socket, Action<WebSocketReceiveResult, byte[]> handleMessage)
+        private async Task Receive(Socket socket, Action<WebSocketReceiveResult, byte[]> handleMessage)
         {
             var buffer = new byte[1024 * 4];
 
-            while(socket.State == WebSocketState.Open)
+            while(socket.WebSocket.State == WebSocketState.Open)
             {
-                var result = await socket.ReceiveAsync(buffer: new ArraySegment<byte>(buffer),
+                var result = await socket.WebSocket.ReceiveAsync(buffer: new ArraySegment<byte>(buffer),
                                                        cancellationToken: CancellationToken.None);
 
                 handleMessage(result, buffer);                

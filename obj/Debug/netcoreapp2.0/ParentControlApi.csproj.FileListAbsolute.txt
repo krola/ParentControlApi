@@ -38,3 +38,4 @@ C:\Code\ParentControlApi\obj\Debug\netcoreapp2.0\ParentControlApi.AssemblyInfoIn
 C:\Code\ParentControlApi\obj\Debug\netcoreapp2.0\ParentControlApi.AssemblyInfo.cs
 C:\Code\ParentControlApi\obj\Debug\netcoreapp2.0\ParentControlApi.dll
 C:\Code\ParentControlApi\obj\Debug\netcoreapp2.0\ParentControlApi.pdb
+C:\Code\ParentControlApi\obj\Debug\netcoreapp2.0\ParentControlApi.csprojAssemblyReference.cache
