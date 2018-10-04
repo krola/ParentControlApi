@@ -38,17 +38,11 @@ namespace ParentControlApi
             services.AddDbContext<ParentControlContext>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters()
+                .AddJwtBearer(options =>
                 {
-                    ValidateIssuer = false,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidateAudience = false,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Token:Key"]))
-                };
-            });
+                    options.Authority = Configuration["Okta:Authority"];
+                    options.Audience = "api://default";
+                });
 
             services.AddSwaggerGen(c =>
             {
@@ -56,12 +50,10 @@ namespace ParentControlApi
                 c.AddSecurityDefinition("Bearer", new ApiKeyScheme() { In = "header", Description = "Please insert token with Bearer into field", Name = "Authorization", Type = "apiKey" });
             });
 
-            services.Configure<TokenConfig>(Configuration.GetSection("Token"));
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<WebSocketConnectionManager>();
             services.AddSingleton<MobileAppWebSocketHandler>();
             services.AddTransient<IUserProvider, UserProvider>();
-            services.AddTransient<IAuthorizationService, AuthorizationService>();
             services.AddTransient<IDeviceService, DeviceService>();
             services.AddTransient<IScheduleService, ScheduleService>();
             services.AddTransient<ITimesheerService, TimesheerService>();

@@ -43,6 +43,7 @@ public class MobileAppWebSocketHandler : WebSocketHandler
             else{
                 await SendMessageAsync(socket, new ClientResponsePocket(){
                     Command = pocket.Command,
+                    Payload = JsonConvert.SerializeObject(new {Message = "No service connected"}),
                     Status = ResponseStatus.Error
                 });
             }

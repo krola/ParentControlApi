@@ -14,9 +14,6 @@ public interface IDeviceService
     void Update(Device newDevice);
     void Remove(int Id);
 
-    void SetOnline(int deviceId, string connectionId);
-    void SetOffline(int deviceId);
-
 }
 public class DeviceService : IDeviceService
 {
@@ -43,22 +40,22 @@ public class DeviceService : IDeviceService
         if(GetAllDevices().Any(d => d.Name == device.Name))
             throw new DeviceAlreadyExistsException();
             
-        var user = userProvider.GetAuthorizedUser();
-        device.UserId = user.Id;
+        var userId = userProvider.GetAuthorizedUserId();
+        device.UserId = userId;
         deviceRepositor.Add(device);
         return device;
     }
 
     private IEnumerable<Device> GetAllDevices()
     {
-        var user = userProvider.GetAuthorizedUser();
-        return deviceRepositor.FindBy(d => d.User == user).AsEnumerable();
+        var userId = userProvider.GetAuthorizedUserId();
+        return deviceRepositor.FindBy(d => d.UserId == userId).AsEnumerable();
     }
 
     private Device GetEntity(int Id)
     {
-        var user = userProvider.GetAuthorizedUser();
-        return deviceRepositor.FindBy(d => d.User == user && d.Id == Id).SingleOrDefault();
+        var userId = userProvider.GetAuthorizedUserId();
+        return deviceRepositor.FindBy(d => d.UserId == userId && d.Id == Id).SingleOrDefault();
     }
 
     public void Update(Device newDevice)
@@ -79,19 +76,5 @@ public class DeviceService : IDeviceService
             throw new DeviceNotExistException();
         }
         deviceRepositor.Delete(entity);
-    }
-
-    public void SetOnline(int deviceId, string connectionId)
-    {
-        var device = Get(deviceId);
-        device.ConnectionId = connectionId;
-        Update(device);
-    }
-
-    public void SetOffline(int deviceId)
-    {
-        var device = Get(deviceId);
-        device.ConnectionId = null;
-        Update(device);
     }
 }

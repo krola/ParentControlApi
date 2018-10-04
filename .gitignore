@@ -312,3 +312,7 @@ bin/Debug/netcoreapp2.0/ParentControlApi.runtimeconfig.dev.json
 obj/Debug/netcoreapp2.0/ParentControlApi.dll
 obj/Debug/netcoreapp2.0/ParentControlApi.pdb
 obj/Debug/netcoreapp2.0/ParentControlApi.csproj.CoreCompileInputs.cache
+obj/Debug/netcoreapp2.0/ParentControlApi.dll
+obj/Debug/netcoreapp2.0/ParentControlApi.pdb
+obj/Debug/netcoreapp2.0/ParentControlApi.csproj.CoreCompileInputs.cache
+obj/Debug/netcoreapp2.0/ParentControlApi.csproj.FileListAbsolute.txt
