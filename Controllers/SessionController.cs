@@ -24,7 +24,7 @@ namespace ParentControlApi.Controllers
         [HttpGet("{deviceId}")]
         public IEnumerable<SessionDTO> Get(int deviceId)
         {
-            return _sessionService.GetAll(deviceId)
+            return _sessionService.Get(deviceId)
             .Select(s => _mapper.Map<SessionDTO>(s));
         }
 
@@ -32,7 +32,7 @@ namespace ParentControlApi.Controllers
         [HttpGet]
         public IEnumerable<SessionDTO> Get([FromQuery] GetDateSessionsParams parameters)
         {
-            return _sessionService.GetForDay(parameters.DeviceId, parameters.Date)
+            return _sessionService.Get(parameters.DeviceId, parameters.From, parameters.To)
             .Select(s => _mapper.Map<SessionDTO>(s));
         }
 

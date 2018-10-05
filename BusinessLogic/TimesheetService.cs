@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using AutoMapper;
+using LinqKit;
 using ParentControlApi.DTO;
 
 public interface ITimesheerService
 {
-    IEnumerable<Timesheet> GetAll(int scheduleId);
+    IEnumerable<Timesheet> Get(int scheduleId, DateTime? from = null, DateTime? to = null);
     Timesheet Create(Timesheet timesheet);
     void Update(Timesheet newTimesheet);
     void Remove(int Id);
@@ -26,10 +28,20 @@ public class TimesheerService : ITimesheerService
         return timesheet;
     }
 
-    public IEnumerable<Timesheet> GetAll(int scheduleId)
+    public IEnumerable<Timesheet> Get(int scheduleId, DateTime? from = null, DateTime? to = null)
     {
         var schedule = scheduleService.Get(scheduleId);
-        return timesheetRepositor.FindBy(t => t.Schedule == schedule).AsEnumerable();
+        var predicate = PredicateBuilder.New<Timesheet>()
+                        .And(t => t.Schedule == schedule);
+        
+        if(from.HasValue){
+            predicate = predicate.And(t => t.DateFrom.Date >= from.Value.Date);
+        }
+        if(to.HasValue){
+            predicate = predicate.And(t => t.DateTo.HasValue && t.DateTo.Value.Date <= to.Value.Date);
+        }
+
+         return timesheetRepositor.FindBy(predicate).AsEnumerable();
     }
 
     public void Remove(int Id)

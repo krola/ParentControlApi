@@ -8,7 +8,6 @@ using WebSocketManager;
 
 public class MobileAppWebSocketHandler : WebSocketHandler
 {
-    private readonly IDeviceService deviceService;
     private readonly WebSocketConnectionManager _webSocketConnectionManager;
 
     public MobileAppWebSocketHandler(WebSocketConnectionManager webSocketConnectionManager) : base(webSocketConnectionManager)

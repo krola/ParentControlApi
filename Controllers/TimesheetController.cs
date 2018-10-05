@@ -20,12 +20,20 @@ namespace ParentControlApi.Controllers
             _timesheetService = timesheetService;
             _mapper = mapper;
         } 
+        [HttpGet("{scheduleId}")]
+        public IEnumerable<TimesheetDTO> Get(int scheduleId)
+        {
+            return _timesheetService
+            .Get(scheduleId)
+            .Select(t => _mapper.Map<TimesheetDTO>(t));
+        }
+
         // GET api/values
         [HttpGet]
         public IEnumerable<TimesheetDTO> Get([FromQuery] GetTimesheetParams parameters)
         {
             return _timesheetService
-            .GetAll(parameters.ScheduleId)
+            .Get(parameters.ScheduleId, parameters.From, parameters.To)
             .Select(t => _mapper.Map<TimesheetDTO>(t));
         }
 
