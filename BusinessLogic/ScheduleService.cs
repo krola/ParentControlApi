@@ -30,6 +30,10 @@ public class ScheduleService : IScheduleService
 
         schedule.DeviceId = device.Id;
         scheduleRepositor.Add(schedule);
+        schedule = scheduleRepositor.FindBy(s => s.DeviceId == device.Id && s.Name == schedule.Name).First();
+        if(schedule.Enabled){
+
+        }
         return schedule;
     }
 
@@ -63,6 +67,10 @@ public class ScheduleService : IScheduleService
         oldSchedule.AllowWithNoTimesheet = newSchedule.AllowWithNoTimesheet;
         oldSchedule.Name = newSchedule.Name;
         oldSchedule.DeviceId = newSchedule.DeviceId;
+        oldSchedule.Enabled = newSchedule.Enabled;
+        if(newSchedule.Enabled){
+            DisableSchedulesExcept(oldSchedule.Id);
+        }
         scheduleRepositor.Edit(oldSchedule);
     }
 
@@ -73,5 +81,12 @@ public class ScheduleService : IScheduleService
             return schedule;
         }
         return null;
+    }
+
+    private void DisableSchedulesExcept(int scheduleId){
+        foreach(var schedule in scheduleRepositor.FindBy(s => s.Enabled && s.Id != scheduleId)){
+            schedule.Enabled = false;
+            scheduleRepositor.Edit(schedule);
+        }
     }
 }

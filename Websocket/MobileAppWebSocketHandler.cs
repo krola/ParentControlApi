@@ -9,6 +9,7 @@ using WebSocketManager;
 public class MobileAppWebSocketHandler : WebSocketHandler
 {
     private readonly WebSocketConnectionManager _webSocketConnectionManager;
+    private readonly string ErrorPayload = JsonConvert.SerializeObject(new {Message = "Server not connected"});
 
     public MobileAppWebSocketHandler(WebSocketConnectionManager webSocketConnectionManager) : base(webSocketConnectionManager)
     {
@@ -35,6 +36,7 @@ public class MobileAppWebSocketHandler : WebSocketHandler
             
             if(serverSocket != null){
                 await SendMessageAsync(serverSocket, new ServerRequestPocket(){
+                    Payload = pocket.Payload,
                     Command = pocket.Command,
                     Origin = socket.SocketId.ToString()
                 });
@@ -42,7 +44,8 @@ public class MobileAppWebSocketHandler : WebSocketHandler
             else{
                 await SendMessageAsync(socket, new ClientResponsePocket(){
                     Command = pocket.Command,
-                    Status = ResponseStatus.Error
+                    Status = ResponseStatus.Error,
+                    Payload = ErrorPayload
                 });
             }
         }
