@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 public enum ResponseStatus{
     Done,
     Error
@@ -5,6 +7,7 @@ public enum ResponseStatus{
 
 public class ClientRequestPocket {
     public string Command {get; set;}
+    [JsonProperty("Payload")]
     public string Payload {get; set;}
 }
 

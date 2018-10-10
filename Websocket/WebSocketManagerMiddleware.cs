@@ -24,7 +24,7 @@ namespace WebSocketManager
                 return;
             
             var socket = await ReadSocketParams(context);
-            await _webSocketHandler.OnConnected(socket);
+            _webSocketHandler.OnConnected(socket);
             
             await Receive(socket, async(result, buffer) =>
             {

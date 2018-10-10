@@ -16,11 +16,15 @@ namespace Websocket
             return _sockets.FirstOrDefault(p => p.SocketId  == id);
         }
 
-        public Socket GetSocket(string deviceId, SocketType type)
+        public IEnumerable<Socket> GetSockets(string deviceId, SocketType type)
         {
-            return _sockets.FirstOrDefault(p => p.DeviceId == deviceId && p.Type == type);
+            return _sockets.Where(p => p.DeviceId == deviceId && p.Type == type);
         }
 
+        public IEnumerable<Socket> GetSockets(string deviceId, string origin, SocketType type)
+        {
+            return _sockets.Where(p => p.DeviceId == deviceId && p.Type == type && p.SocketId == origin);
+        }
 
         public List<Socket> GetAll()
         {

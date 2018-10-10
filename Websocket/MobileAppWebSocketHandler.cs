@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ public class MobileAppWebSocketHandler : WebSocketHandler
 
     public override async Task OnConnected(Socket socket)
     {
-        await base.OnConnected(socket);
+        base.OnConnected(socket);
 
         var socketId = WebSocketConnectionManager.GetId(socket);
 
@@ -32,7 +33,7 @@ public class MobileAppWebSocketHandler : WebSocketHandler
 
         if(socket.Type == SocketType.Client){
             var pocket = JsonConvert.DeserializeObject<ClientRequestPocket>(json);
-            var serverSocket = _webSocketConnectionManager.GetSocket(socket.DeviceId, SocketType.Server);
+            var serverSocket = _webSocketConnectionManager.GetSockets(socket.DeviceId, SocketType.Server).FirstOrDefault();
             
             if(serverSocket != null){
                 await SendMessageAsync(serverSocket, new ServerRequestPocket(){
@@ -51,14 +52,18 @@ public class MobileAppWebSocketHandler : WebSocketHandler
         }
         else {
             var pocket = JsonConvert.DeserializeObject<ServerResposePocket>(json);
-            var clientSocket = _webSocketConnectionManager.GetSocket(socket.DeviceId, SocketType.Client);
+            var clientSockets = 
+                        string.IsNullOrEmpty(pocket.Origin) ? _webSocketConnectionManager.GetSockets(socket.DeviceId, SocketType.Client)
+                                                            : _webSocketConnectionManager.GetSockets(socket.DeviceId, pocket.Origin, SocketType.Client);
             
-            if(clientSocket != null){
-                await SendMessageAsync(clientSocket, new ClientResponsePocket(){
+            if(clientSockets != null && clientSockets.Any()){
+                foreach(var clientSocket in clientSockets){
+                    await SendMessageAsync(clientSocket, new ClientResponsePocket(){
                     Command = pocket.Command,
                     Status = ResponseStatus.Done,
                     Payload = pocket.Payload
                 });
+                }
             }
         }
     }
