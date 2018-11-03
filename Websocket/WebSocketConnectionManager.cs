@@ -18,12 +18,12 @@ namespace Websocket
 
         public IEnumerable<Socket> GetSockets(string deviceId, SocketType type)
         {
-            return _sockets.Where(p => p.DeviceId == deviceId && p.Type == type);
+            return _sockets.Where(p => p.DeviceId == deviceId && p.Type == type && p.WebSocket.State == WebSocketState.Open);
         }
 
         public IEnumerable<Socket> GetSockets(string deviceId, string origin, SocketType type)
         {
-            return _sockets.Where(p => p.DeviceId == deviceId && p.Type == type && p.SocketId == origin);
+            return _sockets.Where(p => p.DeviceId == deviceId && p.Type == type && p.SocketId == origin && p.WebSocket.State == WebSocketState.Open);
         }
 
         public List<Socket> GetAll()
@@ -46,9 +46,12 @@ namespace Websocket
             Socket socket = _sockets.First(s => s.SocketId == id);
             _sockets.Remove(socket);
 
-            await socket.WebSocket.CloseAsync(closeStatus: WebSocketCloseStatus.NormalClosure, 
-                                    statusDescription: "Closed by the WebSocketManager", 
+            if(socket.WebSocket.State == WebSocketState.Open)
+            {
+                await socket.WebSocket.CloseAsync(closeStatus: WebSocketCloseStatus.NormalClosure,
+                                    statusDescription: "Closed by the WebSocketManager",
                                     cancellationToken: CancellationToken.None);
+            }
         }
 
         private string CreateConnectionId()

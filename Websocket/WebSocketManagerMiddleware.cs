@@ -26,22 +26,29 @@ namespace WebSocketManager
             var socket = await ReadSocketParams(context);
             _webSocketHandler.OnConnected(socket);
             
-            await Receive(socket, async(result, buffer) =>
+            try
+            { 
+                await Receive(socket, async(result, buffer) =>
+                {
+                    if(result.MessageType == WebSocketMessageType.Text)
+                    {
+                        await _webSocketHandler.ReceiveAsync(socket, result, buffer);
+                        return;
+                    }
+
+                    else if(result.MessageType == WebSocketMessageType.Close)
+                    {
+                        await _webSocketHandler.OnDisconnected(socket);
+                        return;
+                    }
+
+                });
+            }
+            catch(Exception ex)
             {
-                if(result.MessageType == WebSocketMessageType.Text)
-                {
-                    await _webSocketHandler.ReceiveAsync(socket, result, buffer);
-                    return;
-                }
+                await _webSocketHandler.OnDisconnected(socket);
+            }
 
-                else if(result.MessageType == WebSocketMessageType.Close)
-                {
-                    await _webSocketHandler.OnDisconnected(socket);
-                    return;
-                }
-
-            });
-            
             //TODO - investigate the Kestrel exception thrown when this is the last middleware
             //await _next.Invoke(context);
         }
