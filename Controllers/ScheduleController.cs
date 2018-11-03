@@ -46,8 +46,8 @@ namespace ParentControlApi.Controllers
         [HttpPost("SetActive")]
         public IActionResult SetActive([FromBody]SetActiveScheduleParams parameters)
         {
-            var newSchedule = _scheduleService.Create(_mapper.Map<Schedule>(parameters));
-            return Ok(_mapper.Map<ScheduleDTO>(newSchedule));
+            _scheduleService.SetActive(parameters.ScheduleId);
+            return NoContent();
         }
 
         // PUT api/values/5

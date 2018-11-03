@@ -8,6 +8,7 @@ public interface IScheduleService
     Schedule Get(int Id);
     IEnumerable<Schedule> GetAll(int deviceId);
     Schedule Create(Schedule schedule);
+    void SetActive(int scheduleId);
     void Update(Schedule newSchedule);
     void Remove(int Id);
 }
@@ -76,6 +77,8 @@ public class ScheduleService : IScheduleService
 
     public void SetActive(int scheduleId){
         var schedule = GetSchedule(scheduleId);
+        schedule.Enabled = true;
+        scheduleRepositor.Edit(schedule);
         DisableSchedulesExcept(schedule);
     }
 
