@@ -32,7 +32,7 @@ public class ScheduleService : IScheduleService
         scheduleRepositor.Add(schedule);
         schedule = scheduleRepositor.FindBy(s => s.DeviceId == device.Id && s.Name == schedule.Name).First();
         if(schedule.Enabled){
-
+            DisableSchedulesExcept(schedule);
         }
         return schedule;
     }
@@ -65,13 +65,18 @@ public class ScheduleService : IScheduleService
             throw new ScheduleNotExistsException();
         
         oldSchedule.AllowWithNoTimesheet = newSchedule.AllowWithNoTimesheet;
-        oldSchedule.Name = newSchedule.Name;
+        oldSchedule.Name = newSchedule.Name ?? oldSchedule.Name;
         oldSchedule.DeviceId = newSchedule.DeviceId;
         oldSchedule.Enabled = newSchedule.Enabled;
         if(newSchedule.Enabled){
-            DisableSchedulesExcept(oldSchedule.Id);
+            DisableSchedulesExcept(oldSchedule);
         }
         scheduleRepositor.Edit(oldSchedule);
+    }
+
+    public void SetActive(int scheduleId){
+        var schedule = GetSchedule(scheduleId);
+        DisableSchedulesExcept(schedule);
     }
 
     private Schedule GetSchedule(int Id){
@@ -83,10 +88,10 @@ public class ScheduleService : IScheduleService
         return null;
     }
 
-    private void DisableSchedulesExcept(int scheduleId){
-        foreach(var schedule in scheduleRepositor.FindBy(s => s.Enabled && s.Id != scheduleId)){
-            schedule.Enabled = false;
-            scheduleRepositor.Edit(schedule);
+    private void DisableSchedulesExcept(Schedule schedule){
+        foreach(var s in scheduleRepositor.FindBy(s => s.Enabled && s.Id != schedule.Id && s.DeviceId == schedule.DeviceId)){
+            s.Enabled = false;
+            scheduleRepositor.Edit(s);
         }
     }
 }
