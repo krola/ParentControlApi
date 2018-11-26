@@ -1,12 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 
 public class ParentControlContext : DbContext
-    {
-        public ParentControlContext()
-            : base(new DbContextOptionsBuilder<ParentControlContext>()
-            .UseSqlite("Data Source=parentcontrol.db")
-            .EnableSensitiveDataLogging()
-            .Options)
+{
+        public ParentControlContext(DbContextOptions<ParentControlContext> options) : base(options)
         {
             
         }

@@ -7,42 +7,48 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 public class Repository<T> : 
     IRepository<T> where T : class {
 
-    private DbContext _entities = new ParentControlContext();
+    private DbContext _context;
+
+    public Repository(ParentControlContext context)
+    {
+        _context = context;
+    }
+
     public DbContext Context {
 
-        get { return _entities; }
-        set { _entities = value; }
+        get { return _context; }
+        set { _context = value; }
     }
 
     public virtual IQueryable<T> GetAll() {
 
-        IQueryable<T> query = _entities.Set<T>();
+        IQueryable<T> query = _context.Set<T>();
         return query;
     }
 
     public virtual T Get(int id) {
-        T query = _entities.Set<T>().Find(id);
+        T query = _context.Set<T>().Find(id);
         return query;
     }
 
     public IQueryable<T> FindBy(System.Linq.Expressions.Expression<Func<T, bool>> predicate) {
 
-        IQueryable<T> query = _entities.Set<T>().Where(predicate);
+        IQueryable<T> query = _context.Set<T>().Where(predicate);
         return query;
     }
 
     public void Add(T entity) {
-        _entities.Set<T>().Add(entity);
-        _entities.SaveChanges();
+        _context.Set<T>().Add(entity);
+        _context.SaveChanges();
     }
 
     public void Delete(T entity) {
-        _entities.Set<T>().Remove(entity);
-        _entities.SaveChanges();
+        _context.Set<T>().Remove(entity);
+        _context.SaveChanges();
     }
 
     public void Edit(T entity) {
-        _entities.Entry(entity).State = EntityState.Modified;
-        _entities.SaveChanges();
+        _context.Entry(entity).State = EntityState.Modified;
+        _context.SaveChanges();
     }
 }
