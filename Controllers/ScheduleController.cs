@@ -43,6 +43,13 @@ namespace ParentControlApi.Controllers
             return Ok(_mapper.Map<ScheduleDTO>(newSchedule));
         }
 
+        [HttpPost("SetActive")]
+        public IActionResult SetActive([FromBody]SetActiveScheduleParams parameters)
+        {
+            _scheduleService.SetActive(parameters.ScheduleId);
+            return NoContent();
+        }
+
         // PUT api/values/5
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody]UpdateScheduleParams parameters)

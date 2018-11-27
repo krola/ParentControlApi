@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using AutoMapper;
+using LinqKit;
 
 public interface ISessionService
 {
-    IEnumerable<Session> GetForDay(int deviceId, DateTime date);
-    IEnumerable<Session> GetAll(int deviceId);
+    IEnumerable<Session> Get(int deviceId, DateTime? from = null, DateTime? to = null);
     void Create(Session session);
-
     void Update(Session newSession);
 }
 
@@ -26,16 +26,20 @@ public class SessionService : ISessionService{
         sessionRepositor.Add(session);
     }
 
-    public IEnumerable<Session> GetAll(int deviceId)
+    public IEnumerable<Session> Get(int deviceId, DateTime? from = null, DateTime? to = null)
     {
         var device = deviceService.Get(deviceId);
-        return sessionRepositor.FindBy(t => t.Device == device).AsEnumerable();
-    }
+        var predicate = PredicateBuilder.New<Session>()
+                        .And(s => s.Device == device);
+        
+        if(from.HasValue){
+            predicate = predicate.And(t => t.StarTime.Date >= from.Value.Date);
+        }
+        if(to.HasValue){
+            predicate = predicate.And(s => s.EndTime.HasValue && s.EndTime.Value.Date <= to.Value.Date);
+        }
 
-    public IEnumerable<Session> GetForDay(int deviceId, DateTime date)
-    {
-        var device = deviceService.Get(deviceId);
-        return sessionRepositor.FindBy(t => t.Device == device && t.StarTime.Date == date.Date).AsEnumerable();
+        return sessionRepositor.FindBy(predicate).AsEnumerable();
     
     }
 
