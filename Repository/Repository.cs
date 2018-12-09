@@ -1,54 +1,65 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.Extensions.Configuration;
 
 public class Repository<T> : 
     IRepository<T> where T : class {
+    private readonly IConfiguration configuration;
 
-    private DbContext _context;
-
-    public Repository(ParentControlContext context)
+    public Repository(IConfiguration configuration)
     {
-        _context = context;
+        this.configuration = configuration;
     }
 
-    public DbContext Context {
-
-        get { return _context; }
-        set { _context = value; }
-    }
-
-    public virtual IQueryable<T> GetAll() {
-
-        IQueryable<T> query = _context.Set<T>();
-        return query;
+    public virtual IEnumerable<T> GetAll() {
+        using(var context = new ParentControlContext(configuration))
+        {
+            IQueryable<T> query = context.Set<T>();
+            return query;
+        }
     }
 
     public virtual T Get(int id) {
-        T query = _context.Set<T>().Find(id);
-        return query;
+        using(var context = new ParentControlContext(configuration))
+        {
+            T query = context.Set<T>().Find(id);
+            return query;
+        }
     }
 
-    public IQueryable<T> FindBy(System.Linq.Expressions.Expression<Func<T, bool>> predicate) {
-
-        IQueryable<T> query = _context.Set<T>().Where(predicate);
-        return query;
+    public IEnumerable<T> FindBy(System.Linq.Expressions.Expression<Func<T, bool>> predicate) {
+        using(var context = new ParentControlContext(configuration))
+        {
+            IQueryable<T> query = context.Set<T>().Where(predicate);
+            return query.ToList();
+        }
     }
 
     public void Add(T entity) {
-        _context.Set<T>().Add(entity);
-        _context.SaveChanges();
+        using(var context = new ParentControlContext(configuration))
+        {
+            context.Set<T>().Add(entity);
+            context.SaveChanges();
+        }
     }
 
     public void Delete(T entity) {
-        _context.Set<T>().Remove(entity);
-        _context.SaveChanges();
+        using(var context = new ParentControlContext(configuration))
+        {
+            context.Set<T>().Remove(entity);
+            context.SaveChanges();
+        }
     }
 
     public void Edit(T entity) {
-        _context.Entry(entity).State = EntityState.Modified;
-        _context.SaveChanges();
+        using(var context = new ParentControlContext(configuration))
+        {
+            context.Entry(entity).State = EntityState.Modified;
+            context.SaveChanges();
+        }
     }
 }

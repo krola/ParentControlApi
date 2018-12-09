@@ -50,7 +50,7 @@ namespace ParentControlApi
             });
 
             services.Configure<TokenConfig>(Configuration.GetSection("Token"));
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<WebSocketConnectionManager>();
             services.AddSingleton<MobileAppWebSocketHandler>();
             services.AddTransient<IUserProvider, UserProvider>();

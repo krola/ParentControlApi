@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
 public interface IUserProvider {
     User GetAuthorizedUser();

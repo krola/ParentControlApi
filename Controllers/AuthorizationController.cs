@@ -30,7 +30,7 @@ using ParentControlApi.DTO;
         [Route("Token")]
         public IActionResult GetToken([FromBody]LogInDTO authorizationData)
         {
-            var user = _userRepository.FindBy(u => u.Name == authorizationData.UserName && 
+            var user = _userRepository.FindBy(u => u.Name == authorizationData.Username && 
             u.Password == authorizationData.Password).SingleOrDefault();
             if (user == null)
                 return Unauthorized();
